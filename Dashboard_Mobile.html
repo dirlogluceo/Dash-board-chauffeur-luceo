@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f172a">
+    <title>Primes Chauffeurs - Luceo Madagascar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; overscroll-behavior: none; }
+        .gold-badge { background: linear-gradient(135deg, #fbbf24, #f59e0b, #fbbf24); }
+        .silver-badge { background: linear-gradient(135deg, #d1d5db, #9ca3af, #d1d5db); }
+        .bronze-badge { background: linear-gradient(135deg, #d97706, #b45309, #d97706); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .pull-indicator { 
+            transition: transform 0.2s ease-out;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin { animation: spin 1s linear infinite; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
+    
+    <div id="app" class="min-h-screen flex flex-col">
+        
+        <!-- Header Mobile -->
+        <div class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-lg border-b border-slate-700/50 px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-sm font-bold text-white">LUCEO MADAGASCAR</h1>
+                        <p class="text-xs text-slate-400">Primes Chauffeurs</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div id="clock" class="text-lg font-bold text-white"></div>
+                    <div class="flex items-center justify-end gap-1">
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <span class="text-emerald-400 text-xs">Live</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards Mobile -->
+        <div class="px-3 py-3">
+            <div class="grid grid-cols-2 gap-2">
+                <!-- Budget -->
+                <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-slate-400 text-xs">Budget</p>
+                        <div class="w-7 h-7 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                            <span class="text-emerald-400 text-sm">💰</span>
+                        </div>
+                    </div>
+                    <p class="text-lg font-black text-white">1.3M Ar</p>
+                    <div class="h-1.5 bg-slate-700 rounded-full mt-2 overflow-hidden">
+                        <div id="budget-bar-mobile" class="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 rounded-full transition-all duration-700" style="width: 0%"></div>
+                    </div>
+                    <p class="text-xs text-emerald-400 mt-1"><span id="budget-used-mobile">0</span> Ar utilisé</p>
+                </div>
+
+                <!-- Livraisons -->
+                <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-slate-400 text-xs">Livraisons</p>
+                        <div class="w-7 h-7 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                            <span class="text-blue-400 text-sm">📦</span>
+                        </div>
+                    </div>
+                    <p id="stat-livraisons-mobile" class="text-2xl font-black text-white">0</p>
+                    <p class="text-xs text-slate-400">ce mois</p>
+                </div>
+
+                <!-- Taux -->
+                <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-slate-400 text-xs">Taux Réussite</p>
+                        <div class="w-7 h-7 bg-green-500/20 rounded-lg flex items-center justify-center">
+                            <span class="text-green-400 text-sm">✓</span>
+                        </div>
+                    </div>
+                    <p id="stat-taux-mobile" class="text-2xl font-black text-white">0%</p>
+                    <p class="text-xs text-slate-400">moyenne</p>
+                </div>
+
+                <!-- Chauffeurs -->
+                <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-slate-400 text-xs">Chauffeurs</p>
+                        <div class="w-7 h-7 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                            <span class="text-amber-400 text-sm">👤</span>
+                        </div>
+                    </div>
+                    <p id="stat-chauffeurs-mobile" class="text-2xl font-black text-white">0</p>
+                    <p class="text-xs text-slate-400">actifs</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classement Header -->
+        <div class="px-4 py-2 flex justify-between items-center">
+            <h2 class="text-sm font-bold text-white">🏆 Classement</h2>
+            <button onclick="loadData()" class="text-xs text-slate-400 flex items-center gap-1 active:text-white">
+                <svg id="refresh-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Actualiser
+            </button>
+        </div>
+
+        <!-- Liste des chauffeurs -->
+        <div id="classement-mobile" class="flex-1 px-3 pb-4 space-y-2 overflow-y-auto hide-scrollbar">
+            <div class="text-center py-8 text-slate-500">
+                <svg class="w-8 h-8 mx-auto mb-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Chargement...
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-4 py-2 text-center text-xs text-slate-500 border-t border-slate-800">
+            © 2025 Groupe Luceo Madagascar
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSgrsbMUpI_ndJkHWzQqsqEiU2T7ZJ3UnjHSngsvsR1Cj_8C5rbElSJiWqNbVhOKJs2NkIss7ATJcs1/pub?gid=155188529&single=true&output=csv';
+        const REFRESH_INTERVAL = 30000;
+        const BUDGET_TOTAL = 1300000;
+
+        // ============================================
+        // FONCTIONS UTILITAIRES
+        // ============================================
+        function formatAriary(val) {
+            if (val >= 1000000) return (val / 1000000).toFixed(1) + 'M';
+            if (val >= 1000) return (val / 1000).toFixed(0) + 'K';
+            return val.toString();
+        }
+
+        function formatAriaryFull(val) {
+            return new Intl.NumberFormat('fr-MG').format(Math.round(val));
+        }
+
+        function parseTaux(tauxStr) {
+            if (!tauxStr) return 0;
+            return parseFloat(String(tauxStr).replace('%', '').replace(',', '.')) || 0;
+        }
+
+        function parseNumber(val) {
+            if (!val) return 0;
+            return parseInt(String(val).replace(/[^\d-]/g, '')) || 0;
+        }
+
+        function getTauxColor(taux) {
+            if (taux >= 95) return 'text-emerald-400';
+            if (taux >= 90) return 'text-green-400';
+            if (taux >= 80) return 'text-yellow-400';
+            if (taux >= 70) return 'text-orange-400';
+            return 'text-red-400';
+        }
+
+        function getTauxBg(taux) {
+            if (taux >= 95) return 'bg-emerald-500';
+            if (taux >= 90) return 'bg-green-500';
+            if (taux >= 80) return 'bg-yellow-500';
+            if (taux >= 70) return 'bg-orange-500';
+            return 'bg-red-500';
+        }
+
+        function getRangEmoji(rang) {
+            if (rang === 1) return '🥇';
+            if (rang === 2) return '🥈';
+            if (rang === 3) return '🥉';
+            return rang;
+        }
+
+        function getRangBg(rang) {
+            if (rang === 1) return 'bg-gradient-to-r from-yellow-500/20 to-amber-500/20 border-yellow-500/50';
+            if (rang === 2) return 'bg-gradient-to-r from-slate-400/20 to-slate-500/20 border-slate-400/50';
+            if (rang === 3) return 'bg-gradient-to-r from-amber-600/20 to-orange-600/20 border-amber-600/50';
+            return 'bg-slate-800/50 border-slate-700/50';
+        }
+
+        function getTypeLabel(type) {
+            const t = String(type || '').toLowerCase();
+            if (t.includes('gros')) return { label: 'Gros', color: 'bg-purple-500/30 text-purple-300' };
+            if (t.includes('moyen')) return { label: 'Moyen', color: 'bg-blue-500/30 text-blue-300' };
+            return { label: 'Petit', color: 'bg-cyan-500/30 text-cyan-300' };
+        }
+
+        // ============================================
+        // HORLOGE
+        // ============================================
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // ============================================
+        // RENDU MOBILE
+        // ============================================
+        function renderMobile(data) {
+            console.log('Données reçues:', data);
+
+            const cleanData = data
+                .filter(row => {
+                    const camion = row.Camion || '';
+                    return camion && 
+                           camion.trim() !== '' && 
+                           camion !== 'TOTAL' && 
+                           !camion.includes('Budget') &&
+                           !camion.includes('SUIVI') &&
+                           camion.match(/^[0-9A-Z]/);
+                })
+                .map(row => ({
+                    camion: row.Camion || '',
+                    type: row.Type || 'Petit',
+                    chauffeur: row.Chauffeur || 'Non assigné',
+                    totalLivraisons: parseNumber(row.Total_Livraisons || 0),
+                    livraisonsOK: parseNumber(row.Livraisons_OK || 0),
+                    livraisonsEchec: parseNumber(row.Livraisons_Echec || 0),
+                    taux: parseTaux(row.Taux_Reussite || '0'),
+                    solde: parseNumber(row.Solde_Final || 0),
+                    evolution: row.Evolution || ''
+                }))
+                .filter(d => d.totalLivraisons > 0);
+
+            // Trier par solde
+            cleanData.sort((a, b) => b.solde - a.solde);
+            cleanData.forEach((d, i) => d.rang = i + 1);
+
+            // Stats
+            const totalLivraisons = cleanData.reduce((sum, d) => sum + d.totalLivraisons, 0);
+            const totalOK = cleanData.reduce((sum, d) => sum + d.livraisonsOK, 0);
+            const tauxMoyen = totalLivraisons > 0 ? ((totalOK / totalLivraisons) * 100).toFixed(1) : 0;
+            const totalSolde = cleanData.reduce((sum, d) => sum + d.solde, 0);
+            const chauffeursActifs = cleanData.length;
+
+            // Mettre à jour les stats
+            document.getElementById('stat-livraisons-mobile').textContent = totalLivraisons;
+            document.getElementById('stat-taux-mobile').textContent = tauxMoyen + '%';
+            document.getElementById('stat-chauffeurs-mobile').textContent = chauffeursActifs;
+            document.getElementById('budget-used-mobile').textContent = formatAriaryFull(totalSolde);
+            
+            const budgetPercent = Math.min((totalSolde / BUDGET_TOTAL) * 100, 100);
+            document.getElementById('budget-bar-mobile').style.width = budgetPercent + '%';
+
+            // Rendu liste
+            const container = document.getElementById('classement-mobile');
+
+            if (cleanData.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-500">
+                        <p class="text-lg mb-1">Aucune donnée</p>
+                        <p class="text-sm">Les données apparaîtront après la première clôture de route</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = cleanData.map(c => {
+                const typeInfo = getTypeLabel(c.type);
+                return `
+                <div class="rounded-xl p-3 border ${getRangBg(c.rang)} transition-all active:scale-[0.98]">
+                    <div class="flex items-center gap-3">
+                        <!-- Rang -->
+                        <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-slate-900/50 text-lg font-bold">
+                            ${getRangEmoji(c.rang)}
+                        </div>
+                        
+                        <!-- Info -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-white truncate">${c.chauffeur || 'Non assigné'}</span>
+                                <span class="px-1.5 py-0.5 rounded text-xs font-medium ${typeInfo.color}">${typeInfo.label}</span>
+                            </div>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-xs text-slate-400">${c.camion}</span>
+                                <span class="text-xs text-slate-500">•</span>
+                                <span class="text-xs text-slate-400">${c.livraisonsOK}/${c.totalLivraisons} livr.</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Score -->
+                        <div class="text-right">
+                            <p class="font-black ${c.solde > 0 ? 'text-emerald-400' : 'text-slate-400'}">${formatAriaryFull(c.solde)}</p>
+                            <p class="text-xs text-slate-500">Ar</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Barre de progression -->
+                    <div class="mt-2 flex items-center gap-2">
+                        <div class="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full ${getTauxBg(c.taux)} rounded-full" style="width: ${c.taux}%"></div>
+                        </div>
+                        <span class="text-xs font-bold ${getTauxColor(c.taux)}">${c.taux.toFixed(0)}%</span>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // ============================================
+        // CHARGEMENT
+        // ============================================
+        async function loadData() {
+            const refreshIcon = document.getElementById('refresh-icon');
+            refreshIcon.classList.add('animate-spin');
+
+            if (GOOGLE_SHEET_CSV_URL && GOOGLE_SHEET_CSV_URL.trim() !== '') {
+                try {
+                    const response = await fetch(GOOGLE_SHEET_CSV_URL);
+                    const csvText = await response.text();
+                    const parsed = Papa.parse(csvText, { 
+                        header: true, 
+                        skipEmptyLines: true,
+                        transformHeader: (h) => h.trim().replace(/\s+/g, '_')
+                    });
+                    renderMobile(parsed.data);
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    document.getElementById('classement-mobile').innerHTML = `
+                        <div class="text-center py-8 text-red-400">
+                            <p>Erreur de chargement</p>
+                            <p class="text-sm text-slate-500 mt-1">Vérifiez votre connexion</p>
+                        </div>
+                    `;
+                }
+            } else {
+                document.getElementById('classement-mobile').innerHTML = `
+                    <div class="text-center py-8 text-amber-400">
+                        <p>Configuration requise</p>
+                        <p class="text-sm text-slate-500 mt-1">Ajoutez l'URL CSV</p>
+                    </div>
+                `;
+            }
+
+            setTimeout(() => refreshIcon.classList.remove('animate-spin'), 500);
+        }
+
+        // ============================================
+        // INIT
+        // ============================================
+        updateClock();
+        setInterval(updateClock, 1000);
+        loadData();
+        setInterval(loadData, REFRESH_INTERVAL);
+    </script>
+</body>
+</html>

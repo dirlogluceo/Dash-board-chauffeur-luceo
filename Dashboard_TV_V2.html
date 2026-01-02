@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="300">
+    <title>Dashboard Primes Chauffeurs - Groupe Luceo Madagascar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.8); }
+        }
+        .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+        .gold-badge { background: linear-gradient(135deg, #fbbf24, #f59e0b, #fbbf24); }
+        .silver-badge { background: linear-gradient(135deg, #d1d5db, #9ca3af, #d1d5db); }
+        .bronze-badge { background: linear-gradient(135deg, #d97706, #b45309, #d97706); }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+        .float-animation { animation: float 3s ease-in-out infinite; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white p-4 overflow-hidden">
+    
+    <div id="app" class="h-screen flex flex-col">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 float-animation">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight bg-gradient-to-r from-white via-blue-100 to-cyan-200 bg-clip-text text-transparent">
+                        GROUPE LUCEO MADAGASCAR
+                    </h1>
+                    <p class="text-slate-400 text-sm">Tableau des Performances & Primes Chauffeurs</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div id="clock" class="text-3xl font-bold text-white tracking-wider"></div>
+                <div id="date" class="text-slate-400 text-sm"></div>
+                <div class="mt-1 flex items-center justify-end gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-emerald-400 text-xs font-medium">Mise à jour en direct</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-4 gap-3 mb-4">
+            <!-- Budget Card -->
+            <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur rounded-xl p-4 border border-slate-700/50 shadow-xl">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <p class="text-slate-400 text-xs uppercase tracking-wider">Budget Mensuel</p>
+                        <p class="text-2xl font-black text-white mt-1">1 300 000 Ar</p>
+                    </div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="relative h-3 bg-slate-700 rounded-full overflow-hidden mb-2">
+                    <div id="budget-bar" class="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-500 via-green-400 to-cyan-400 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between text-xs">
+                    <span class="text-emerald-400 font-semibold">Distribué: <span id="budget-used">0</span> Ar</span>
+                    <span class="text-cyan-400 font-semibold">Reste: <span id="budget-remaining">1 300 000</span> Ar</span>
+                </div>
+            </div>
+
+            <!-- Livraisons -->
+            <div class="bg-gradient-to-br from-blue-900/50 to-blue-950/50 backdrop-blur rounded-xl p-4 border border-blue-700/30 shadow-lg">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-blue-300 text-xs uppercase tracking-wider">Livraisons</p>
+                        <p id="stat-livraisons" class="text-3xl font-black text-white mt-1">0</p>
+                        <p class="text-blue-400 text-xs mt-1">ce mois</p>
+                    </div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Taux Réussite -->
+            <div class="bg-gradient-to-br from-emerald-900/50 to-emerald-950/50 backdrop-blur rounded-xl p-4 border border-emerald-700/30 shadow-lg">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-emerald-300 text-xs uppercase tracking-wider">Taux Réussite</p>
+                        <p id="stat-taux" class="text-3xl font-black text-white mt-1">0%</p>
+                        <p class="text-emerald-400 text-xs mt-1">moyenne équipe</p>
+                    </div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chauffeurs Actifs -->
+            <div class="bg-gradient-to-br from-amber-900/50 to-amber-950/50 backdrop-blur rounded-xl p-4 border border-amber-700/30 shadow-lg">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-amber-300 text-xs uppercase tracking-wider">Chauffeurs Actifs</p>
+                        <p id="stat-chauffeurs" class="text-3xl font-black text-white mt-1">0</p>
+                        <p class="text-amber-400 text-xs mt-1">ce mois</p>
+                    </div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/30">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classement Table -->
+        <div class="flex-1 bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur rounded-xl border border-slate-700/50 shadow-2xl overflow-hidden flex flex-col">
+            <!-- Table Header -->
+            <div class="grid grid-cols-12 gap-2 px-4 py-3 bg-slate-800/80 border-b border-slate-700/50 text-xs font-bold uppercase tracking-wider text-slate-400">
+                <div class="col-span-1 text-center">Rang</div>
+                <div class="col-span-1">Camion</div>
+                <div class="col-span-2">Chauffeur</div>
+                <div class="col-span-1 text-center">Type</div>
+                <div class="col-span-2 text-center">Livraisons</div>
+                <div class="col-span-2 text-center">Taux Réussite</div>
+                <div class="col-span-1 text-center">Évol.</div>
+                <div class="col-span-2 text-right">Prime</div>
+            </div>
+
+            <!-- Table Body -->
+            <div id="classement-body" class="flex-1 overflow-y-auto scrollbar-hide divide-y divide-slate-700/30">
+                <div class="px-6 py-8 text-center text-slate-500">
+                    <svg class="w-10 h-10 mx-auto mb-3 text-slate-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Chargement des données...
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Legend -->
+        <div class="mt-3 flex justify-between items-center text-slate-500 text-xs">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-1">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                    <span>≥95% Excellent</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                    <span>90-94% Très bien</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                    <span>80-89% Bien</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                    <span>70-79% Limite</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                    <span>&lt;70% Critique</span>
+                </div>
+            </div>
+            <div class="text-slate-400">
+                © 2025 Groupe Luceo Madagascar • Système de Primes TrackPOD v2.0
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION - MODIFIE CETTE URL
+        // ============================================
+        
+        // Colle ton URL CSV ici entre les guillemets
+        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSgrsbMUpI_ndJkHWzQqsqEiU2T7ZJ3UnjHSngsvsR1Cj_8C5rbElSJiWqNbVhOKJs2NkIss7ATJcs1/pub?gid=155188529&single=true&output=csv';
+        
+        // Intervalle de rafraîchissement (en millisecondes)
+        const REFRESH_INTERVAL = 30000; // 30 secondes
+        
+        // Budget mensuel
+        const BUDGET_TOTAL = 1300000;
+
+        // ============================================
+        // FONCTIONS UTILITAIRES
+        // ============================================
+        
+        function formatAriary(val) {
+            return new Intl.NumberFormat('fr-MG').format(Math.round(val));
+        }
+
+        function parseTaux(tauxStr) {
+            if (!tauxStr) return 0;
+            return parseFloat(String(tauxStr).replace('%', '').replace(',', '.')) || 0;
+        }
+
+        function parseNumber(val) {
+            if (!val) return 0;
+            return parseInt(String(val).replace(/[^\d-]/g, '')) || 0;
+        }
+
+        function getTauxColor(taux) {
+            if (taux >= 95) return 'text-emerald-400';
+            if (taux >= 90) return 'text-green-400';
+            if (taux >= 80) return 'text-yellow-400';
+            if (taux >= 70) return 'text-orange-400';
+            return 'text-red-400';
+        }
+
+        function getTauxBg(taux) {
+            if (taux >= 95) return 'bg-emerald-500';
+            if (taux >= 90) return 'bg-green-500';
+            if (taux >= 80) return 'bg-yellow-500';
+            if (taux >= 70) return 'bg-orange-500';
+            return 'bg-red-500';
+        }
+
+        function getRangStyle(rang) {
+            if (rang === 1) return 'gold-badge text-yellow-900 shadow-lg';
+            if (rang === 2) return 'silver-badge text-gray-800 shadow-lg';
+            if (rang === 3) return 'bronze-badge text-amber-100 shadow-lg';
+            return 'bg-slate-700 text-white';
+        }
+
+        function getRangIcon(rang) {
+            if (rang === 1) return '🥇';
+            if (rang === 2) return '🥈';
+            if (rang === 3) return '🥉';
+            return rang;
+        }
+
+        function getEvolutionIcon(evolution) {
+            const evol = String(evolution || '').toLowerCase();
+            if (evol === 'up' || evol === '↑' || evol === 'hausse' || evol === '^') {
+                return '<span class="text-emerald-400 text-lg">∧</span>';
+            }
+            if (evol === 'down' || evol === '↓' || evol === 'baisse' || evol === 'v') {
+                return '<span class="text-red-400 text-lg">∨</span>';
+            }
+            return '<span class="text-slate-400 text-lg">—</span>';
+        }
+
+        function getBadge(rang, taux, solde) {
+            if (rang === 1) return '<span class="ml-2 px-2 py-0.5 bg-gradient-to-r from-yellow-500 to-amber-500 text-xs font-bold rounded-full text-white">CHAMPION</span>';
+            if (rang === 2) return '<span class="ml-2 px-2 py-0.5 bg-gradient-to-r from-purple-500 to-pink-500 text-xs font-bold rounded-full text-white">⭐ STAR</span>';
+            if (rang === 3) return '<span class="ml-2 px-2 py-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-xs font-bold rounded-full text-white">🚀 TOP 3</span>';
+            if (taux < 70) return '<span class="ml-2 px-2 py-0.5 bg-gradient-to-r from-red-600 to-red-500 text-xs font-bold rounded-full text-white">⚠ ATTENTION</span>';
+            return '';
+        }
+
+        function getTypeStyle(type) {
+            const t = String(type || '').toLowerCase();
+            if (t.includes('gros')) return 'bg-purple-500/30 text-purple-300 border border-purple-500/50';
+            if (t.includes('moyen')) return 'bg-blue-500/30 text-blue-300 border border-blue-500/50';
+            return 'bg-cyan-500/30 text-cyan-300 border border-cyan-500/50';
+        }
+
+        function getTypeLabel(type) {
+            const t = String(type || '').toLowerCase();
+            if (t.includes('gros')) return 'Gros 7T';
+            if (t.includes('moyen')) return 'Moyen 4T';
+            return 'Petit 2T';
+        }
+
+        // ============================================
+        // MISE À JOUR DE L'HORLOGE
+        // ============================================
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        // ============================================
+        // RENDU DU CLASSEMENT
+        // ============================================
+        function renderClassement(data) {
+            console.log('Données brutes reçues:', data);
+            
+            // Filtrer et parser les données
+            // Les colonnes du CSV sont: Camion, Type, Chauffeur, Total_Livraisons, Livraisons_OK, Livraisons_Echec, Taux_Reussite, Total_Primes, Total_Penalites, Solde_Final, Evolution
+            const cleanData = data
+                .filter(row => {
+                    const camion = row.Camion || row['Camion'] || '';
+                    // Exclure les lignes vides, TOTAL, et les lignes de budget
+                    return camion && 
+                           camion.trim() !== '' && 
+                           camion !== 'TOTAL' && 
+                           !camion.includes('Budget') &&
+                           !camion.includes('SUIVI') &&
+                           camion.match(/^[0-9A-Z]/); // Commence par un chiffre ou une lettre majuscule
+                })
+                .map(row => {
+                    const totalLivraisons = parseNumber(row.Total_Livraisons || row['Total_Livraisons'] || 0);
+                    const livraisonsOK = parseNumber(row.Livraisons_OK || row['Livraisons_OK'] || 0);
+                    const livraisonsEchec = parseNumber(row.Livraisons_Echec || row['Livraisons_Echec'] || 0);
+                    const tauxStr = row.Taux_Reussite || row['Taux_Reussite'] || '0';
+                    const taux = parseTaux(tauxStr);
+                    
+                    return {
+                        camion: row.Camion || row['Camion'] || '',
+                        type: row.Type || row['Type'] || 'Petit',
+                        chauffeur: row.Chauffeur || row['Chauffeur'] || 'Non assigné',
+                        totalLivraisons: totalLivraisons,
+                        livraisonsOK: livraisonsOK,
+                        livraisonsEchec: livraisonsEchec,
+                        taux: taux,
+                        totalPrimes: parseNumber(row.Total_Primes || row['Total_Primes'] || 0),
+                        totalPenalites: parseNumber(row.Total_Penalites || row['Total_Penalites'] || 0),
+                        solde: parseNumber(row.Solde_Final || row['Solde_Final'] || 0),
+                        evolution: row.Evolution || row['Evolution'] || ''
+                    };
+                })
+                .filter(d => d.camion && d.totalLivraisons > 0); // Garder seulement les camions avec des livraisons
+
+            console.log('Données nettoyées:', cleanData);
+
+            // Si aucune donnée, afficher un message
+            if (cleanData.length === 0) {
+                const tbody = document.getElementById('classement-body');
+                tbody.innerHTML = `
+                    <div class="px-6 py-8 text-center text-slate-500">
+                        <p class="text-lg mb-2">Aucune donnée de livraison ce mois</p>
+                        <p class="text-sm">Les données apparaîtront après la première clôture de route</p>
+                    </div>
+                `;
+                
+                // Reset stats
+                document.getElementById('stat-livraisons').textContent = '0';
+                document.getElementById('stat-taux').textContent = '0%';
+                document.getElementById('stat-chauffeurs').textContent = '0';
+                document.getElementById('budget-bar').style.width = '0%';
+                document.getElementById('budget-used').textContent = '0';
+                document.getElementById('budget-remaining').textContent = formatAriary(BUDGET_TOTAL);
+                return;
+            }
+
+            // Trier par solde décroissant
+            cleanData.sort((a, b) => b.solde - a.solde);
+
+            // Ajouter les rangs
+            cleanData.forEach((d, i) => d.rang = i + 1);
+
+            // Stats globales
+            const totalLivraisons = cleanData.reduce((sum, d) => sum + d.totalLivraisons, 0);
+            const totalOK = cleanData.reduce((sum, d) => sum + d.livraisonsOK, 0);
+            const tauxMoyen = totalLivraisons > 0 ? ((totalOK / totalLivraisons) * 100).toFixed(1) : 0;
+            const totalSolde = cleanData.reduce((sum, d) => sum + d.solde, 0);
+            const chauffeursActifs = cleanData.filter(d => d.totalLivraisons > 0).length;
+
+            // Mettre à jour les stats
+            document.getElementById('stat-livraisons').textContent = totalLivraisons.toLocaleString();
+            document.getElementById('stat-taux').textContent = tauxMoyen + '%';
+            document.getElementById('stat-chauffeurs').textContent = chauffeursActifs;
+            
+            // Budget avec animation
+            const budgetPercent = Math.min((totalSolde / BUDGET_TOTAL) * 100, 100);
+            setTimeout(() => {
+                document.getElementById('budget-bar').style.width = budgetPercent + '%';
+            }, 100);
+            document.getElementById('budget-used').textContent = formatAriary(totalSolde);
+            document.getElementById('budget-remaining').textContent = formatAriary(Math.max(0, BUDGET_TOTAL - totalSolde));
+
+            // Générer les lignes du tableau
+            const tbody = document.getElementById('classement-body');
+
+            tbody.innerHTML = cleanData.map((c, index) => `
+                <div class="grid grid-cols-12 gap-2 px-4 py-2.5 items-center transition-all duration-300 hover:bg-slate-700/30 ${index < 3 ? 'bg-slate-800/40' : ''}">
+                    <!-- Rang -->
+                    <div class="col-span-1 flex justify-center">
+                        <span class="w-9 h-9 flex items-center justify-center rounded-lg font-black text-sm ${getRangStyle(c.rang)}">
+                            ${getRangIcon(c.rang)}
+                        </span>
+                    </div>
+
+                    <!-- Camion -->
+                    <div class="col-span-1">
+                        <span class="font-bold text-white">${c.camion}</span>
+                    </div>
+
+                    <!-- Chauffeur -->
+                    <div class="col-span-2">
+                        <span class="font-semibold text-white">${c.chauffeur || 'Non assigné'}</span>
+                        ${getBadge(c.rang, c.taux, c.solde)}
+                    </div>
+
+                    <!-- Type -->
+                    <div class="col-span-1 text-center">
+                        <span class="px-2 py-1 rounded text-xs font-bold ${getTypeStyle(c.type)}">
+                            ${getTypeLabel(c.type)}
+                        </span>
+                    </div>
+
+                    <!-- Livraisons -->
+                    <div class="col-span-2 text-center">
+                        <span class="font-bold text-white">${c.livraisonsOK}</span>
+                        <span class="text-slate-500 text-sm">/${c.totalLivraisons}</span>
+                        ${c.livraisonsEchec > 0 ? `<span class="text-red-400 text-xs ml-1">(${c.livraisonsEchec} échec${c.livraisonsEchec > 1 ? 's' : ''})</span>` : ''}
+                    </div>
+
+                    <!-- Taux -->
+                    <div class="col-span-2">
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1 h-2.5 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full ${getTauxBg(c.taux)} rounded-full transition-all duration-700" style="width: ${Math.min(c.taux, 100)}%"></div>
+                            </div>
+                            <span class="font-bold text-sm min-w-[50px] text-right ${getTauxColor(c.taux)}">
+                                ${c.taux.toFixed(1)}%
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Evolution -->
+                    <div class="col-span-1 flex justify-center">
+                        ${getEvolutionIcon(c.evolution)}
+                    </div>
+
+                    <!-- Prime -->
+                    <div class="col-span-2 text-right">
+                        <span class="font-black text-lg ${c.solde > 0 ? 'text-emerald-400' : 'text-red-400'}">
+                            ${c.solde > 0 ? formatAriary(c.solde) + ' Ar' : '0 Ar'}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // CHARGEMENT DES DONNÉES
+        // ============================================
+        async function loadData() {
+            if (GOOGLE_SHEET_CSV_URL && GOOGLE_SHEET_CSV_URL.trim() !== '') {
+                try {
+                    console.log('Chargement depuis Google Sheets:', GOOGLE_SHEET_CSV_URL);
+                    const response = await fetch(GOOGLE_SHEET_CSV_URL);
+                    const csvText = await response.text();
+                    console.log('CSV reçu:', csvText.substring(0, 500));
+                    
+                    const parsed = Papa.parse(csvText, { 
+                        header: true, 
+                        skipEmptyLines: true,
+                        transformHeader: (h) => h.trim().replace(/\s+/g, '_')
+                    });
+                    
+                    console.log('Headers détectés:', parsed.meta.fields);
+                    console.log('Données parsées:', parsed.data);
+                    renderClassement(parsed.data);
+                } catch (error) {
+                    console.error('Erreur chargement Google Sheets:', error);
+                    document.getElementById('classement-body').innerHTML = `
+                        <div class="px-6 py-8 text-center text-red-400">
+                            <p class="text-lg mb-2">Erreur de chargement</p>
+                            <p class="text-sm text-slate-500">Vérifiez l'URL du Google Sheet</p>
+                        </div>
+                    `;
+                }
+            } else {
+                console.log('Pas d\'URL configurée');
+                document.getElementById('classement-body').innerHTML = `
+                    <div class="px-6 py-8 text-center text-amber-400">
+                        <p class="text-lg mb-2">Configuration requise</p>
+                        <p class="text-sm text-slate-500">Ajoutez l'URL CSV du Google Sheet dans le fichier HTML</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ============================================
+        // INITIALISATION
+        // ============================================
+        updateClock();
+        setInterval(updateClock, 1000);
+        
+        loadData();
+        setInterval(loadData, REFRESH_INTERVAL);
+        
+        console.log('Dashboard Groupe Luceo Madagascar initialisé');
+        console.log('URL Google Sheet:', GOOGLE_SHEET_CSV_URL || 'Non configurée');
+    </script>
+</body>
+</html>

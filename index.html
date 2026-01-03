@@ -151,10 +151,10 @@ const MSG_TAUX = {
 
 function getMotivMsg(taux) {
     let msgs, color, bgColor;
-    if (taux >= 95) { msgs = MSG_TAUX.excellent; color = 'text-emerald-400'; bgColor = 'bg-emerald-500/20 border-emerald-500/50'; }
-    else if (taux >= 90) { msgs = MSG_TAUX.tresBien; color = 'text-green-400'; bgColor = 'bg-green-500/20 border-green-500/50'; }
-    else if (taux >= 80) { msgs = MSG_TAUX.bien; color = 'text-yellow-400'; bgColor = 'bg-yellow-500/20 border-yellow-500/50'; }
-    else if (taux >= 70) { msgs = MSG_TAUX.moyen; color = 'text-orange-400'; bgColor = 'bg-orange-500/20 border-orange-500/50'; }
+    if (taux >= 98) { msgs = MSG_TAUX.excellent; color = 'text-emerald-400'; bgColor = 'bg-emerald-500/20 border-emerald-500/50'; }
+    else if (taux >= 95) { msgs = MSG_TAUX.tresBien; color = 'text-green-400'; bgColor = 'bg-green-500/20 border-green-500/50'; }
+    else if (taux >= 92) { msgs = MSG_TAUX.bien; color = 'text-yellow-400'; bgColor = 'bg-yellow-500/20 border-yellow-500/50'; }
+    else if (taux >= 80) { msgs = MSG_TAUX.moyen; color = 'text-orange-400'; bgColor = 'bg-orange-500/20 border-orange-500/50'; }
     else { msgs = MSG_TAUX.faible; color = 'text-red-400'; bgColor = 'bg-red-500/20 border-red-500/50'; }
     const msg = msgs[Math.floor(Math.random() * msgs.length)];
     return { msg, color, bgColor };

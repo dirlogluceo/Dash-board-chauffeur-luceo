@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a4a6e">
+    <title>Dashboard Primes - LUCEO Group Madagascar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>tailwind.config={theme:{extend:{colors:{'luceo-dark':'#1a4a6e','luceo-red':'#e63946'}}}}</script>
+    <style>
+        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#1a4a6e 0%,#0d2840 50%,#1a4a6e 100%);min-height:100vh}
+        .gold-badge{background:linear-gradient(135deg,#ffd700,#ffb700,#ffd700);box-shadow:0 0 20px rgba(255,215,0,0.5)}
+        .silver-badge{background:linear-gradient(135deg,#e8e8e8,#b8b8b8,#e8e8e8);box-shadow:0 0 15px rgba(192,192,192,0.5)}
+        .bronze-badge{background:linear-gradient(135deg,#cd7f32,#8b4513,#cd7f32);box-shadow:0 0 15px rgba(205,127,50,0.5)}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}.float{animation:float 3s ease-in-out infinite}
+        @keyframes pulse{0%,100%{box-shadow:0 0 10px rgba(230,57,70,0.4)}50%{box-shadow:0 0 30px rgba(230,57,70,0.8)}}.pulse{animation:pulse 2s ease-in-out infinite}
+        @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.spin{animation:spin 1s linear infinite}
+        @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.slide-up{animation:slideUp 0.5s ease-out forwards}
+        @keyframes confetti{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}.confetti{animation:confetti 3s ease-out forwards}
+        .hide-scroll::-webkit-scrollbar{display:none}.hide-scroll{-ms-overflow-style:none;scrollbar-width:none}
+        @media(min-width:768px){.mobile-only{display:none!important}.desktop-only{display:flex!important}}
+        @media(max-width:767px){.mobile-only{display:flex!important}.desktop-only{display:none!important}}
+    </style>
+</head>
+<body class="text-white">
+<div id="confetti-box" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
+
+<!-- DESKTOP -->
+<div id="desktop" class="desktop-only hidden h-screen flex-col p-4 overflow-hidden">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center gap-4">
+            <div class="float">
+                <svg width="280" height="70" viewBox="0 0 280 70">
+                    <!-- Texte LUCE en blanc -->
+                    <text x="0" y="43" font-family="Poppins" font-weight="800" font-size="42" fill="white">LUCE</text>
+                    <!-- Le O stylisé collé au E -->
+                    <g transform="translate(135, 30)">
+                        <!-- Cercle extérieur blanc -->
+                        <circle cx="0" cy="0" r="24" fill="white"/>
+                        <!-- Cercle intérieur bleu foncé -->
+                        <circle cx="0" cy="0" r="19" fill="#1a4a6e"/>
+                        <!-- Rayons en blanc -->
+                        <g stroke="white" stroke-width="1.2">
+                            <line x1="0" y1="-17" x2="0" y2="-12"/><line x1="0" y1="17" x2="0" y2="12"/>
+                            <line x1="-17" y1="0" x2="-12" y2="0"/><line x1="17" y1="0" x2="12" y2="0"/>
+                            <line x1="-12" y1="-12" x2="-8" y2="-8"/><line x1="12" y1="12" x2="8" y2="8"/>
+                            <line x1="-12" y1="12" x2="-8" y2="8"/><line x1="12" y1="-12" x2="8" y2="-8"/>
+                            <line x1="-8" y1="-15" x2="-5" y2="-11"/><line x1="8" y1="15" x2="5" y2="11"/>
+                            <line x1="-15" y1="-8" x2="-11" y2="-5"/><line x1="15" y1="8" x2="11" y2="5"/>
+                            <line x1="-15" y1="8" x2="-11" y2="5"/><line x1="15" y1="-8" x2="11" y2="-5"/>
+                            <line x1="-8" y1="15" x2="-5" y2="11"/><line x1="8" y1="-15" x2="5" y2="-11"/>
+                        </g>
+                        <!-- Madagascar rouge -->
+                        <path d="M-2 -13 L2 -11 L4 -5 L3 5 L1 11 L-3 13 L-5 8 L-4 -1 L-2 -9 Z" fill="#e63946"/>
+                    </g>
+                    <!-- LOGISTIQUE à droite -->
+                    <text x="168" y="43" font-family="Poppins" font-weight="600" font-size="14" fill="white">LOGISTIQUE</text>
+                </svg>
+            </div>
+            <div>
+                <p class="text-white/50 text-xs uppercase tracking-wider">Tableau de bord</p>
+                <h1 class="text-lg font-bold">Performance Chauffeurs</h1>
+                <p class="text-white/40 text-xs italic">Une vision commune, Un avenir rayonnant</p>
+            </div>
+        </div>
+        <div id="motivation-d" class="flex-1 mx-6 text-center"><p class="text-base font-bold text-white/70">🚛 Une vision commune, Un avenir rayonnant</p></div>
+        <div class="text-right">
+            <div id="clock-d" class="text-3xl font-bold"></div>
+            <div id="date-d" class="text-white/50 text-sm"></div>
+            <div class="flex items-center justify-end gap-1 mt-1"><span class="w-2 h-2 bg-luceo-red rounded-full pulse"></span><span class="text-luceo-red text-xs font-semibold">EN DIRECT</span></div>
+        </div>
+    </div>
+    <!-- Stats -->
+    <div class="grid grid-cols-4 gap-3 mb-4">
+        <div class="bg-white/10 rounded-2xl p-4 border border-white/20">
+            <div class="flex justify-between mb-2"><div><p class="text-white/50 text-xs uppercase">Budget</p><p class="text-2xl font-black">1 300 000 Ar</p></div><span class="text-3xl">💰</span></div>
+            <div class="h-3 bg-white/20 rounded-full overflow-hidden mb-1"><div id="bar-d" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full transition-all duration-1000" style="width:0%"></div></div>
+            <div class="flex justify-between text-xs"><span class="text-emerald-400">Distribué: <span id="used-d">0</span> Ar</span><span class="text-cyan-400">Reste: <span id="rest-d">1 300 000</span> Ar</span></div>
+        </div>
+        <div class="bg-white/10 rounded-2xl p-4 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Livraisons</p><p id="liv-d" class="text-3xl font-black">0</p><p class="text-white/40 text-xs">ce mois</p></div><span class="text-3xl">📦</span></div></div>
+        <div class="bg-white/10 rounded-2xl p-4 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Taux Réussite</p><p id="taux-d" class="text-3xl font-black">0%</p><p class="text-white/40 text-xs">moyenne</p></div><span class="text-3xl">✅</span></div></div>
+        <div class="bg-white/10 rounded-2xl p-4 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Chauffeurs</p><p id="chauf-d" class="text-3xl font-black">0</p><p class="text-white/40 text-xs">actifs</p></div><span class="text-3xl">🚛</span></div></div>
+    </div>
+    <!-- Podium -->
+    <div id="podium-d" class="mb-4 hidden">
+        <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+            <h3 class="text-center text-white/50 text-sm font-bold uppercase mb-4">🏆 PODIUM DU MOIS 🏆</h3>
+            <div class="flex justify-center items-end gap-4 h-36">
+                <div class="flex flex-col items-center"><div class="w-14 h-14 rounded-full silver-badge flex items-center justify-center text-2xl mb-1">🥈</div><p id="p2n" class="text-white font-bold text-sm truncate w-20 text-center">-</p><p id="p2p" class="text-white/50 text-xs">0 Ar</p><div class="w-16 h-16 bg-gradient-to-t from-gray-400 to-gray-300 rounded-t-lg mt-2 flex items-center justify-center"><span class="text-gray-700 font-black text-xl">2</span></div></div>
+                <div class="flex flex-col items-center"><div class="w-18 h-18 rounded-full gold-badge flex items-center justify-center text-3xl mb-1 float">🥇</div><p id="p1n" class="text-white font-bold truncate w-24 text-center">-</p><p id="p1p" class="text-yellow-400 font-bold">0 Ar</p><div class="w-20 h-24 bg-gradient-to-t from-yellow-500 to-yellow-400 rounded-t-lg mt-2 flex items-center justify-center"><span class="text-yellow-800 font-black text-2xl">1</span></div></div>
+                <div class="flex flex-col items-center"><div class="w-12 h-12 rounded-full bronze-badge flex items-center justify-center text-xl mb-1">🥉</div><p id="p3n" class="text-white font-bold text-sm truncate w-16 text-center">-</p><p id="p3p" class="text-white/50 text-xs">0 Ar</p><div class="w-14 h-12 bg-gradient-to-t from-amber-700 to-amber-600 rounded-t-lg mt-2 flex items-center justify-center"><span class="text-amber-200 font-black text-lg">3</span></div></div>
+            </div>
+        </div>
+    </div>
+    <!-- Table -->
+    <div class="flex-1 bg-white/5 rounded-2xl border border-white/10 overflow-hidden flex flex-col">
+        <div class="grid grid-cols-12 gap-2 px-4 py-2 bg-white/10 text-xs font-bold uppercase text-white/50">
+            <div class="col-span-1 text-center">Rang</div><div class="col-span-1">Camion</div><div class="col-span-2">Chauffeur</div><div class="col-span-1 text-center">Type</div><div class="col-span-2 text-center">Livraisons</div><div class="col-span-2 text-center">Taux</div><div class="col-span-1 text-center">Évol.</div><div class="col-span-2 text-right">Prime</div>
+        </div>
+        <div id="list-d" class="flex-1 overflow-y-auto hide-scroll"><div class="p-8 text-center text-white/40"><svg class="w-8 h-8 mx-auto mb-2 spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Chargement...</div></div>
+    </div>
+    <div class="mt-2 flex justify-between text-white/30 text-xs"><div class="flex gap-3"><span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>≥95%</span><span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500"></span>90-94%</span><span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-yellow-500"></span>80-89%</span><span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span>&lt;70%</span></div><span>© 2025 LUCEO Group Madagascar</span></div>
+</div>
+
+<!-- MOBILE -->
+<div id="mobile" class="mobile-only hidden flex-col min-h-screen">
+    <div class="sticky top-0 z-40 bg-luceo-dark/95 backdrop-blur border-b border-white/10 px-4 py-3">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <svg width="140" height="35" viewBox="0 0 140 35">
+                        <!-- Texte LUCE en blanc -->
+                        <text x="0" y="22" font-family="Poppins" font-weight="800" font-size="20" fill="white">LUCE</text>
+                        <!-- Le O stylisé collé au E -->
+                        <g transform="translate(68, 14)">
+                            <circle cx="0" cy="0" r="12" fill="white"/>
+                            <circle cx="0" cy="0" r="9" fill="#1a4a6e"/>
+                            <g stroke="white" stroke-width="0.7">
+                                <line x1="0" y1="-8" x2="0" y2="-5"/><line x1="0" y1="8" x2="0" y2="5"/>
+                                <line x1="-8" y1="0" x2="-5" y2="0"/><line x1="8" y1="0" x2="5" y2="0"/>
+                                <line x1="-6" y1="-6" x2="-4" y2="-4"/><line x1="6" y1="6" x2="4" y2="4"/>
+                                <line x1="-6" y1="6" x2="-4" y2="4"/><line x1="6" y1="-6" x2="4" y2="-4"/>
+                            </g>
+                            <path d="M-1 -7 L1 -5 L2 -2 L1 3 L0 6 L-2 7 L-2 4 L-2 -1 L-1 -5 Z" fill="#e63946"/>
+                        </g>
+                        <!-- LOGISTIQUE -->
+                        <text x="85" y="22" font-family="Poppins" font-weight="600" font-size="8" fill="white">LOGISTIQUE</text>
+                    </svg>
+                <div><p class="text-xs text-white/50">Performance Chauffeurs</p></div>
+            </div>
+            <div class="text-right"><div id="clock-m" class="text-lg font-bold"></div><div class="flex items-center justify-end gap-1"><span class="w-1.5 h-1.5 bg-luceo-red rounded-full pulse"></span><span class="text-luceo-red text-xs">LIVE</span></div></div>
+        </div>
+        <div id="motivation-m" class="mt-2 text-center"><p class="text-sm font-semibold text-white/70">🚛 Une vision commune, Un avenir rayonnant</p></div>
+    </div>
+    <div class="px-3 py-3 grid grid-cols-2 gap-2">
+        <div class="bg-white/10 rounded-xl p-3 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Budget</span><span>💰</span></div><p class="text-lg font-black">1.3M Ar</p><div class="h-1.5 bg-white/20 rounded-full mt-1 overflow-hidden"><div id="bar-m" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" style="width:0%"></div></div><p class="text-xs text-emerald-400 mt-1"><span id="used-m">0</span> Ar</p></div>
+        <div class="bg-white/10 rounded-xl p-3 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Livraisons</span><span>📦</span></div><p id="liv-m" class="text-2xl font-black">0</p><p class="text-xs text-white/40">ce mois</p></div>
+        <div class="bg-white/10 rounded-xl p-3 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Taux</span><span>✅</span></div><p id="taux-m" class="text-2xl font-black">0%</p><p class="text-xs text-white/40">moyenne</p></div>
+        <div class="bg-white/10 rounded-xl p-3 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Chauffeurs</span><span>🚛</span></div><p id="chauf-m" class="text-2xl font-black">0</p><p class="text-xs text-white/40">actifs</p></div>
+    </div>
+    <div id="podium-m" class="px-3 mb-2 hidden"><div class="bg-white/5 rounded-xl p-3 border border-white/10"><div class="flex justify-around items-end"><div class="text-center"><span class="text-2xl">🥈</span><p id="p2nm" class="text-xs text-white truncate w-14">-</p></div><div class="text-center -mt-3"><span class="text-3xl float">🥇</span><p id="p1nm" class="text-sm text-white font-bold truncate w-18">-</p><p id="p1pm" class="text-xs text-yellow-400">0 Ar</p></div><div class="text-center"><span class="text-2xl">🥉</span><p id="p3nm" class="text-xs text-white truncate w-14">-</p></div></div></div></div>
+    <div class="px-4 py-2 flex justify-between items-center"><h2 class="text-sm font-bold">🏆 Classement</h2><button onclick="loadData()" class="text-xs text-white/50 bg-white/10 px-3 py-1 rounded-full flex items-center gap-1"><svg id="ref" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Actualiser</button></div>
+    <div id="list-m" class="flex-1 px-3 pb-4 space-y-2 overflow-y-auto hide-scroll"><div class="text-center py-8 text-white/40"><svg class="w-8 h-8 mx-auto mb-2 spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Chargement...</div></div>
+    <div class="px-4 py-2 text-center text-xs text-white/30 border-t border-white/10">© 2025 LUCEO Group Madagascar</div>
+</div>
+
+<script>
+const CSV_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vSgrsbMUpI_ndJkHWzQqsqEiU2T7ZJ3UnjHSngsvsR1Cj_8C5rbElSJiWqNbVhOKJs2NkIss7ATJcs1/pub?gid=155188529&single=true&output=csv';
+const BUDGET=1300000;
+
+// Messages de motivation selon le taux de réussite (en malgache)
+const MSG_TAUX = {
+    excellent: ["🏆 Tena mahay!", "⭐ Champion!", "💯 Tonga lafatra!", "🌟 Tsara indrindra!"],  // ≥98%
+    tresBien: ["👏 Tsara be!", "💪 Mitohy toy izany!", "🎯 Efa akaiky ny tanjona!"],  // 90-95%
+    bien: ["👍 Tsara!", "📈 Misy fandrosoana!", "🚀 Afaka manao tsaratsara kokoa!"],  // 80-89%
+    moyen: ["⚠️ Mila manatsara!", "📊 Mbola mila ezaka!", "🔧 Miezaha mafy kokoa!"],  // 70-79%
+    faible: ["🚨 Mila miresaka!", "❗ Tsy ampy izany!", "⛔ Tokony hiova!"],  // <70%
+    nouveau: ["🆕 Mbola vaovao", "📋 Miandry data"]  // Pas encore de données
+};
+
+function getMotivationMessage(taux, nom) {
+    let msgs, color;
+    if (taux >= 95) { msgs = MSG_TAUX.excellent; color = 'text-emerald-400'; }
+    else if (taux >= 90) { msgs = MSG_TAUX.tresBien; color = 'text-green-400'; }
+    else if (taux >= 80) { msgs = MSG_TAUX.bien; color = 'text-yellow-400'; }
+    else if (taux >= 70) { msgs = MSG_TAUX.moyen; color = 'text-orange-400'; }
+    else { msgs = MSG_TAUX.faible; color = 'text-red-400'; }
+    const msg = msgs[Math.floor(Math.random() * msgs.length)];
+    return { msg: `${nom}: ${msg}`, color };
+}
+
+let currentDriverIndex = 0;
+let driversData = [];
+
+const fmt=v=>new Intl.NumberFormat('fr-MG').format(Math.round(v));
+const pTaux=s=>s?parseFloat(String(s).replace('%','').replace(',','.'))||0:0;
+const pNum=v=>v?parseInt(String(v).replace(/[^\d-]/g,''))||0:0;
+const tCol=t=>t>=95?'text-emerald-400':t>=90?'text-green-400':t>=80?'text-yellow-400':t>=70?'text-orange-400':'text-red-400';
+const tBg=t=>t>=95?'bg-emerald-500':t>=90?'bg-green-500':t>=80?'bg-yellow-500':t>=70?'bg-orange-500':'bg-red-500';
+const rSty=r=>r===1?'gold-badge text-yellow-900':r===2?'silver-badge text-gray-800':r===3?'bronze-badge text-amber-100':'bg-white/20 text-white';
+const rIco=r=>r===1?'🥇':r===2?'🥈':r===3?'🥉':r;
+const rBg=r=>r===1?'bg-gradient-to-r from-yellow-500/20 to-amber-500/20 border-yellow-500/30':r===2?'bg-gradient-to-r from-gray-400/20 to-gray-500/20 border-gray-400/30':r===3?'bg-gradient-to-r from-amber-600/20 to-orange-600/20 border-amber-600/30':'bg-white/5 border-white/10';
+const evIco=e=>{const v=String(e||'').toLowerCase();return v==='up'||v==='↑'?'<span class="text-emerald-400">↑</span>':v==='down'||v==='↓'?'<span class="text-red-400">↓</span>':'<span class="text-white/30">―</span>';};
+const badge=(r,t)=>r===1?'<span class="ml-1 px-1.5 py-0.5 gold-badge text-xs font-bold rounded-full text-yellow-900">CHAMPION</span>':r===2?'<span class="ml-1 px-1.5 py-0.5 bg-purple-500 text-xs font-bold rounded-full">⭐ STAR</span>':r===3?'<span class="ml-1 px-1.5 py-0.5 bg-cyan-500 text-xs font-bold rounded-full">🚀 TOP3</span>':t<70?'<span class="ml-1 px-1.5 py-0.5 bg-red-500/50 text-xs rounded-full">⚠️</span>':'';
+const tSty=t=>{const v=String(t||'').toLowerCase();return v.includes('gros')?'bg-purple-500/30 text-purple-300':v.includes('moyen')?'bg-blue-500/30 text-blue-300':'bg-cyan-500/30 text-cyan-300';};
+const tLbl=t=>{const v=String(t||'').toLowerCase();return v.includes('gros')?'Gros 7T':v.includes('moyen')?'Moyen 4T':'Petit 2T';};
+const tLblS=t=>{const v=String(t||'').toLowerCase();return v.includes('gros')?{l:'Gros',c:'bg-purple-500/30 text-purple-300'}:v.includes('moyen')?{l:'Moyen',c:'bg-blue-500/30 text-blue-300'}:{l:'Petit',c:'bg-cyan-500/30 text-cyan-300'};};
+
+function confetti(){const c=document.getElementById('confetti-box'),cols=['#ffd700','#e63946','#1a4a6e','#10b981'];for(let i=0;i<40;i++){setTimeout(()=>{const d=document.createElement('div');d.className='confetti absolute w-3 h-3 rounded-sm';d.style.left=Math.random()*100+'%';d.style.top='-20px';d.style.backgroundColor=cols[Math.floor(Math.random()*cols.length)];c.appendChild(d);setTimeout(()=>d.remove(),3500);},i*40);}}
+
+function updateMotiv(){
+    if(driversData.length === 0) {
+        const defaultMsg = "🚛 Une vision commune, Un avenir rayonnant";
+        const d=document.getElementById('motivation-d'),mob=document.getElementById('motivation-m');
+        if(d)d.innerHTML=`<p class="text-base font-bold text-white/70">${defaultMsg}</p>`;
+        if(mob)mob.innerHTML=`<p class="text-sm font-semibold text-white/70">${defaultMsg}</p>`;
+        return;
+    }
+    
+    currentDriverIndex = (currentDriverIndex + 1) % driversData.length;
+    const driver = driversData[currentDriverIndex];
+    const { msg, color } = getMotivationMessage(driver.tx, driver.chf || driver.cam);
+    
+    const d=document.getElementById('motivation-d'),mob=document.getElementById('motivation-m');
+    if(d)d.innerHTML=`<p class="text-base font-bold ${color}">${msg}</p>`;
+    if(mob)mob.innerHTML=`<p class="text-sm font-semibold ${color}">${msg}</p>`;
+}
+function clock(){const n=new Date(),t=n.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}),tm=n.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),d=n.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});const cd=document.getElementById('clock-d'),dd=document.getElementById('date-d'),cm=document.getElementById('clock-m');if(cd)cd.textContent=t;if(dd)dd.textContent=d;if(cm)cm.textContent=tm;}
+
+function parse(data){return data.filter(r=>{const c=r.Camion||'';return c&&c.trim()!==''&&c!=='TOTAL'&&!c.includes('Budget')&&!c.includes('SUIVI')&&c.match(/^[0-9A-Z]/);}).map(r=>({cam:r.Camion||'',typ:r.Type||'Petit',chf:r.Chauffeur||'Non assigné',tot:pNum(r.Total_Livraisons||0),ok:pNum(r.Livraisons_OK||0),ko:pNum(r.Livraisons_Echec||0),tx:pTaux(r.Taux_Reussite||'0'),sol:pNum(r.Solde_Final||0),ev:r.Evolution||''})).filter(d=>d.tot>0);}
+
+function podium(data){
+    if(data.length>=1){document.getElementById('podium-d').classList.remove('hidden');document.getElementById('podium-m').classList.remove('hidden');document.getElementById('p1n').textContent=data[0].chf||data[0].cam;document.getElementById('p1p').textContent=fmt(data[0].sol)+' Ar';document.getElementById('p1nm').textContent=data[0].chf||data[0].cam;document.getElementById('p1pm').textContent=fmt(data[0].sol)+' Ar';}
+    if(data.length>=2){document.getElementById('p2n').textContent=data[1].chf||data[1].cam;document.getElementById('p2p').textContent=fmt(data[1].sol)+' Ar';document.getElementById('p2nm').textContent=data[1].chf||data[1].cam;}
+    if(data.length>=3){document.getElementById('p3n').textContent=data[2].chf||data[2].cam;document.getElementById('p3p').textContent=fmt(data[2].sol)+' Ar';document.getElementById('p3nm').textContent=data[2].chf||data[2].cam;}
+}
+
+function renderD(data){
+    data.sort((a,b)=>b.sol-a.sol);data.forEach((d,i)=>d.rg=i+1);
+    driversData = data; // Stocker pour les messages de motivation
+    const tL=data.reduce((s,d)=>s+d.tot,0),tO=data.reduce((s,d)=>s+d.ok,0),tM=tL>0?((tO/tL)*100).toFixed(1):0,tS=data.reduce((s,d)=>s+d.sol,0);
+    document.getElementById('liv-d').textContent=tL.toLocaleString();document.getElementById('taux-d').textContent=tM+'%';document.getElementById('chauf-d').textContent=data.length;document.getElementById('used-d').textContent=fmt(tS);document.getElementById('rest-d').textContent=fmt(Math.max(0,BUDGET-tS));
+    setTimeout(()=>{document.getElementById('bar-d').style.width=Math.min((tS/BUDGET)*100,100)+'%';},100);
+    podium(data);
+    const el=document.getElementById('list-d');
+    if(data.length===0){el.innerHTML='<div class="p-8 text-center text-white/40">Aucune donnée</div>';return;}
+    el.innerHTML=data.map((c,i)=>`<div class="grid grid-cols-12 gap-2 px-4 py-2.5 items-center hover:bg-white/10 ${i<3?'bg-white/5':''} slide-up" style="animation-delay:${i*0.05}s"><div class="col-span-1 flex justify-center"><span class="w-9 h-9 flex items-center justify-center rounded-xl font-black ${rSty(c.rg)}">${rIco(c.rg)}</span></div><div class="col-span-1 font-bold">${c.cam}</div><div class="col-span-2"><span class="font-semibold">${c.chf}</span>${badge(c.rg,c.tx)}</div><div class="col-span-1 text-center"><span class="px-2 py-0.5 rounded text-xs font-bold ${tSty(c.typ)}">${tLbl(c.typ)}</span></div><div class="col-span-2 text-center"><span class="font-bold">${c.ok}</span><span class="text-white/40">/${c.tot}</span>${c.ko>0?`<span class="text-red-400 text-xs ml-1">(${c.ko})</span>`:''}</div><div class="col-span-2"><div class="flex items-center gap-2"><div class="flex-1 h-2.5 bg-white/20 rounded-full overflow-hidden"><div class="h-full ${tBg(c.tx)} rounded-full" style="width:${Math.min(c.tx,100)}%"></div></div><span class="font-bold text-sm ${tCol(c.tx)}">${c.tx.toFixed(1)}%</span></div></div><div class="col-span-1 text-center">${evIco(c.ev)}</div><div class="col-span-2 text-right font-black text-lg ${c.sol>0?'text-emerald-400':'text-white/40'}">${c.sol>0?fmt(c.sol)+' Ar':'0 Ar'}</div></div>`).join('');
+    if(data.some(d=>d.tx>=100))confetti();
+}
+
+function renderM(data){
+    data.sort((a,b)=>b.sol-a.sol);data.forEach((d,i)=>d.rg=i+1);
+    const tL=data.reduce((s,d)=>s+d.tot,0),tO=data.reduce((s,d)=>s+d.ok,0),tM=tL>0?((tO/tL)*100).toFixed(1):0,tS=data.reduce((s,d)=>s+d.sol,0);
+    document.getElementById('liv-m').textContent=tL;document.getElementById('taux-m').textContent=tM+'%';document.getElementById('chauf-m').textContent=data.length;document.getElementById('used-m').textContent=fmt(tS);document.getElementById('bar-m').style.width=Math.min((tS/BUDGET)*100,100)+'%';
+    const el=document.getElementById('list-m');
+    if(data.length===0){el.innerHTML='<div class="text-center py-8 text-white/40">Aucune donnée</div>';return;}
+    el.innerHTML=data.map((c,i)=>{const ti=tLblS(c.typ);return`<div class="rounded-2xl p-3 border ${rBg(c.rg)} slide-up" style="animation-delay:${i*0.05}s"><div class="flex items-center gap-3"><div class="w-11 h-11 flex items-center justify-center rounded-xl ${rSty(c.rg)} text-lg font-bold">${rIco(c.rg)}</div><div class="flex-1 min-w-0"><div class="flex items-center gap-2"><span class="font-bold truncate">${c.chf}</span><span class="px-1.5 py-0.5 rounded text-xs font-semibold ${ti.c}">${ti.l}</span></div><div class="flex items-center gap-1 mt-0.5 text-xs text-white/50"><span>${c.cam}</span><span>•</span><span>${c.ok}/${c.tot}</span></div></div><div class="text-right"><p class="font-black ${c.sol>0?'text-emerald-400':'text-white/40'}">${fmt(c.sol)}</p><p class="text-xs text-white/30">Ar</p></div></div><div class="mt-2 flex items-center gap-2"><div class="flex-1 h-1.5 bg-white/20 rounded-full overflow-hidden"><div class="h-full ${tBg(c.tx)} rounded-full" style="width:${c.tx}%"></div></div><span class="text-xs font-bold ${tCol(c.tx)}">${c.tx.toFixed(0)}%</span></div></div>`;}).join('');
+}
+
+async function loadData(){
+    const ri=document.getElementById('ref');if(ri)ri.classList.add('spin');
+    if(CSV_URL&&CSV_URL.trim()!==''){
+        try{const r=await fetch(CSV_URL),t=await r.text(),p=Papa.parse(t,{header:true,skipEmptyLines:true,transformHeader:h=>h.trim().replace(/\s+/g,'_')}),d=parse(p.data);renderD([...d]);renderM([...d]);}
+        catch(e){console.error(e);document.getElementById('list-d').innerHTML='<div class="p-8 text-center text-red-400">Erreur</div>';document.getElementById('list-m').innerHTML='<div class="py-8 text-center text-red-400">Erreur</div>';}
+    }else{document.getElementById('list-d').innerHTML='<div class="p-8 text-center text-amber-400"><p>Configuration requise</p><p class="text-sm text-white/40 mt-1">Ajoutez l\'URL CSV</p></div>';document.getElementById('list-m').innerHTML='<div class="py-8 text-center text-amber-400"><p>Configuration requise</p></div>';}
+    if(ri)setTimeout(()=>ri.classList.remove('spin'),500);
+}
+
+clock();setInterval(clock,1000);
+updateMotiv();setInterval(updateMotiv,5000);
+loadData();setInterval(loadData,30000);
+</script>
+</body>
+</html>

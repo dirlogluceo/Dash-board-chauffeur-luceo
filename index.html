@@ -390,8 +390,6 @@ function renderD(data) {
             <div class="col-span-2 text-right font-black text-lg ${c.sol>0?'text-emerald-400':'text-white/40'}">${c.sol>0?fmt(c.sol)+' Ar':'0 Ar'}</div>
         </div>`;
     }).join('');
-    
-    if (data.some(d => d.tx >= 100)) confetti();
 }
 
 function renderM(data) {

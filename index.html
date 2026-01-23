@@ -82,7 +82,7 @@
     <!-- Content Dashboard -->
     <div id="content-dashboard-d" class="flex-1 flex flex-col overflow-hidden">
         <!-- Stats -->
-        <div class="grid grid-cols-4 gap-3 mb-3">
+        <div class="grid grid-cols-5 gap-3 mb-3">
             <div class="bg-white/10 rounded-2xl p-3 border border-white/20">
                 <div class="flex justify-between mb-2"><div><p class="text-white/50 text-xs uppercase">Budget</p><p class="text-xl font-black">1 300 000 Ar</p></div><span class="text-2xl">💰</span></div>
                 <div class="h-2 bg-white/20 rounded-full overflow-hidden mb-1"><div id="bar-d" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full transition-all duration-1000" style="width:0%"></div></div>
@@ -90,7 +90,8 @@
             </div>
             <div class="bg-white/10 rounded-2xl p-3 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Livraisons</p><p id="liv-d" class="text-3xl font-black">0</p><p class="text-white/40 text-xs">ce mois</p></div><span class="text-2xl">📦</span></div></div>
             <div class="bg-white/10 rounded-2xl p-3 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Taux Réussite</p><p id="taux-d" class="text-3xl font-black">0%</p><p class="text-white/40 text-xs">moyenne</p></div><span class="text-2xl">✅</span></div></div>
-            <div class="bg-white/10 rounded-2xl p-3 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Chauffeurs</p><p id="chauf-d" class="text-3xl font-black">0</p><p class="text-white/40 text-xs">actifs</p></div><span class="text-2xl">🚛</span></div></div>
+            <div class="bg-white/10 rounded-2xl p-3 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Satisfaction</p><p id="satisfaction-d" class="text-2xl font-black text-yellow-400">⭐ 0.0</p><p class="text-white/40 text-xs">note client</p></div><span class="text-2xl">😊</span></div></div>
+            <div class="bg-white/10 rounded-2xl p-3 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Camions</p><p id="chauf-d" class="text-3xl font-black">0</p><p class="text-white/40 text-xs">actifs</p></div><span class="text-2xl">🚛</span></div></div>
         </div>
         <!-- Table -->
         <div class="flex-1 bg-white/5 rounded-2xl border border-white/10 overflow-hidden flex flex-col">
@@ -157,7 +158,7 @@
             <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-yellow-500"></span>80-89%</span>
             <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span>&lt;70%</span>
         </div>
-        <span>© 2026 LUCEO Group Madagascar</span>
+        <span>© 2025 LUCEO Group Madagascar</span>
     </div>
 </div>
 
@@ -194,11 +195,12 @@
 
     <!-- Content Dashboard Mobile -->
     <div id="content-dashboard-m" class="flex-1 flex flex-col overflow-hidden">
-        <div class="px-3 py-3 grid grid-cols-2 gap-2">
-            <div class="bg-white/10 rounded-xl p-3 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Budget</span><span>💰</span></div><p class="text-lg font-black">1.3M Ar</p><div class="h-1.5 bg-white/20 rounded-full mt-1 overflow-hidden"><div id="bar-m" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" style="width:0%"></div></div><p class="text-xs text-emerald-400 mt-1"><span id="used-m">0</span> Ar</p></div>
-            <div class="bg-white/10 rounded-xl p-3 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Livraisons</span><span>📦</span></div><p id="liv-m" class="text-2xl font-black">0</p><p class="text-xs text-white/40">ce mois</p></div>
-            <div class="bg-white/10 rounded-xl p-3 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Taux</span><span>✅</span></div><p id="taux-m" class="text-2xl font-black">0%</p><p class="text-xs text-white/40">moyenne</p></div>
-            <div class="bg-white/10 rounded-xl p-3 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Chauffeurs</span><span>🚛</span></div><p id="chauf-m" class="text-2xl font-black">0</p><p class="text-xs text-white/40">actifs</p></div>
+        <div class="px-3 py-3 grid grid-cols-3 gap-2">
+            <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Budget</span><span>💰</span></div><p class="text-sm font-black">1.3M Ar</p><div class="h-1 bg-white/20 rounded-full mt-1 overflow-hidden"><div id="bar-m" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" style="width:0%"></div></div></div>
+            <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Livraisons</span><span>📦</span></div><p id="liv-m" class="text-xl font-black">0</p></div>
+            <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Taux</span><span>✅</span></div><p id="taux-m" class="text-xl font-black">0%</p></div>
+            <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Satisfaction</span><span>😊</span></div><p id="satisfaction-m" class="text-lg font-black text-yellow-400">⭐ 0.0</p></div>
+            <div class="bg-white/10 rounded-xl p-2 border border-white/10 col-span-2"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Camions actifs</span><span>🚛</span></div><p id="chauf-m" class="text-xl font-black">0</p></div>
         </div>
         <div class="px-4 py-2 flex justify-between items-center"><h2 class="text-sm font-bold">🏆 Classement</h2><button onclick="loadData()" class="text-xs text-white/50 bg-white/10 px-3 py-1 rounded-full flex items-center gap-1"><svg id="ref" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Actualiser</button></div>
         <div id="list-m" class="flex-1 px-3 pb-4 space-y-2 overflow-y-auto hide-scroll"><div class="text-center py-8 text-white/40"><svg class="w-8 h-8 mx-auto mb-2 spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Chargement...</div></div>
@@ -240,7 +242,7 @@
         </div>
     </div>
 
-    <div class="px-4 py-2 text-center text-xs text-white/30 border-t border-white/10">© 2026 LUCEO Group Madagascar</div>
+    <div class="px-4 py-2 text-center text-xs text-white/30 border-t border-white/10">© 2025 LUCEO Group Madagascar</div>
 </div>
 
 <script>
@@ -342,6 +344,8 @@ function parse(data) {
         ko: pNum(r.Livraisons_Echec || 0),
         tx: pTaux(r.Taux_Reussite || '0'),
         sol: pNum(r.Solde_Final || 0),
+        pot: pNum(r.Prime_Potentielle || r.Total_Primes || 0),
+        note: parseFloat(r.Note_Moyenne || r.Note || '0') || 0,
         mois: r.Mois || ''
     })).filter(d => d.tot > 0);
 }
@@ -367,11 +371,16 @@ function renderD(data) {
     const tM = tL > 0 ? ((tO/tL)*100).toFixed(1) : 0;
     const tS = data.reduce((s,d) => s + d.sol, 0);
     
+    // Calcul satisfaction moyenne
+    const notesValides = data.filter(d => d.note > 0);
+    const satMoy = notesValides.length > 0 ? (notesValides.reduce((s,d) => s + d.note, 0) / notesValides.length).toFixed(1) : 0;
+    
     document.getElementById('liv-d').textContent = tL.toLocaleString();
     document.getElementById('taux-d').textContent = tM + '%';
     document.getElementById('chauf-d').textContent = data.length;
     document.getElementById('used-d').textContent = fmt(tS);
     document.getElementById('rest-d').textContent = fmt(Math.max(0, BUDGET - tS));
+    document.getElementById('satisfaction-d').innerHTML = satMoy > 0 ? `⭐ ${satMoy}` : '⭐ --';
     setTimeout(() => { document.getElementById('bar-d').style.width = Math.min((tS/BUDGET)*100, 100) + '%'; }, 100);
     
     const el = document.getElementById('list-d');
@@ -379,6 +388,11 @@ function renderD(data) {
     
     el.innerHTML = data.map((c,i) => {
         const motiv = getMotivMsg(c.tx);
+        const primeBlocked = c.tx < 95;
+        const primeDisplay = primeBlocked 
+            ? `<div class="text-orange-400"><span class="text-sm">🔒</span> <span class="line-through opacity-60">${fmt(c.pot)}</span></div><div class="text-xs text-orange-300/70">Objectif: 95%</div>`
+            : `<div>${fmt(c.sol)} Ar</div>`;
+        const primeClass = primeBlocked ? 'text-orange-400' : 'text-emerald-400';
         return `<div class="grid grid-cols-12 gap-2 px-4 py-2.5 items-center hover:bg-white/10 ${i<3?'bg-white/5':''} slide-up" style="animation-delay:${i*0.05}s">
             <div class="col-span-1 flex justify-center"><span class="w-9 h-9 flex items-center justify-center rounded-xl font-black ${rSty(c.rg)}">${rIco(c.rg)}</span></div>
             <div class="col-span-1 font-bold text-sm">${c.cam}</div>
@@ -387,9 +401,12 @@ function renderD(data) {
             <div class="col-span-1 text-center"><span class="font-bold">${c.ok}</span><span class="text-white/40">/${c.tot}</span></div>
             <div class="col-span-2"><div class="flex items-center gap-2"><div class="flex-1 h-2.5 bg-white/20 rounded-full overflow-hidden"><div class="h-full ${tBg(c.tx)} rounded-full" style="width:${Math.min(c.tx,100)}%"></div></div><span class="font-bold text-sm ${tCol(c.tx)}">${c.tx.toFixed(0)}%</span></div></div>
             <div class="col-span-2 text-center"><span class="px-2 py-1 rounded-lg border text-xs font-bold ${motiv.bgColor} ${motiv.color}">${motiv.msg}</span></div>
-            <div class="col-span-2 text-right font-black text-lg ${c.sol>0?'text-emerald-400':'text-white/40'}">${c.sol>0?fmt(c.sol)+' Ar':'0 Ar'}</div>
+            <div class="col-span-2 text-right font-black ${primeClass}">${primeDisplay}</div>
         </div>`;
     }).join('');
+    
+    // Confettis désactivés
+    // if (data.some(d => d.tx >= 100)) confetti();
 }
 
 function renderM(data) {
@@ -401,10 +418,14 @@ function renderM(data) {
     const tM = tL > 0 ? ((tO/tL)*100).toFixed(1) : 0;
     const tS = data.reduce((s,d) => s + d.sol, 0);
     
+    // Calcul satisfaction moyenne
+    const notesValides = data.filter(d => d.note > 0);
+    const satMoy = notesValides.length > 0 ? (notesValides.reduce((s,d) => s + d.note, 0) / notesValides.length).toFixed(1) : 0;
+    
     document.getElementById('liv-m').textContent = tL;
     document.getElementById('taux-m').textContent = tM + '%';
     document.getElementById('chauf-m').textContent = data.length;
-    document.getElementById('used-m').textContent = fmt(tS);
+    document.getElementById('satisfaction-m').innerHTML = satMoy > 0 ? `⭐ ${satMoy}` : '⭐ --';
     document.getElementById('bar-m').style.width = Math.min((tS/BUDGET)*100, 100) + '%';
     
     const el = document.getElementById('list-m');
@@ -413,6 +434,9 @@ function renderM(data) {
     el.innerHTML = data.map((c,i) => {
         const ti = tLblS(c.typ);
         const motiv = getMotivMsg(c.tx);
+        const primeBlocked = c.tx < 95;
+        const primeClass = primeBlocked ? 'text-orange-400' : 'text-emerald-400';
+        const primeText = primeBlocked ? `🔒 ${fmt(c.pot)}` : fmt(c.sol);
         return `<div class="rounded-2xl p-3 border ${rBg(c.rg)} slide-up" style="animation-delay:${i*0.05}s">
             <div class="flex items-center gap-3">
                 <div class="w-11 h-11 flex items-center justify-center rounded-xl ${rSty(c.rg)} text-lg font-bold">${rIco(c.rg)}</div>
@@ -421,8 +445,8 @@ function renderM(data) {
                     <div class="flex items-center gap-1 mt-0.5 text-xs text-white/50"><span>${c.cam}</span><span>•</span><span>${c.ok}/${c.tot}</span></div>
                 </div>
                 <div class="text-right">
-                    <p class="font-black ${c.sol>0?'text-emerald-400':'text-white/40'}">${fmt(c.sol)}</p>
-                    <p class="text-xs text-white/30">Ar</p>
+                    <p class="font-black ${primeClass}">${primeText}</p>
+                    <p class="text-xs ${primeBlocked ? 'text-orange-300/70' : 'text-white/30'}">${primeBlocked ? 'Obj: 95%' : 'Ar'}</p>
                 </div>
             </div>
             <div class="mt-2 flex items-center gap-2">

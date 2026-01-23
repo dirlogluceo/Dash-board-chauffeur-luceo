@@ -25,6 +25,7 @@
         @media(max-width:767px){.mobile-only{display:flex!important}.desktop-only{display:none!important}}
         select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.5rem center;background-size:1.5em 1.5em;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
         .tab-active{background:rgba(255,255,255,0.2);border-bottom:2px solid #e63946}
+        .grid-cols-13{grid-template-columns:repeat(13,minmax(0,1fr))}
     </style>
 </head>
 <body class="text-white">
@@ -95,8 +96,8 @@
         </div>
         <!-- Table -->
         <div class="flex-1 bg-white/5 rounded-2xl border border-white/10 overflow-hidden flex flex-col">
-            <div class="grid grid-cols-12 gap-2 px-4 py-2 bg-white/10 text-xs font-bold uppercase text-white/50">
-                <div class="col-span-1 text-center">Rang</div><div class="col-span-1">Camion</div><div class="col-span-2">Chauffeur</div><div class="col-span-1 text-center">Type</div><div class="col-span-1 text-center">Livr.</div><div class="col-span-2 text-center">Taux</div><div class="col-span-2 text-center">Motivation</div><div class="col-span-2 text-right">Prime</div>
+            <div class="grid grid-cols-13 gap-2 px-4 py-2 bg-white/10 text-xs font-bold uppercase text-white/50">
+                <div class="col-span-1 text-center">Rang</div><div class="col-span-1">Camion</div><div class="col-span-2">Chauffeur</div><div class="col-span-1 text-center">Type</div><div class="col-span-1 text-center">Livr.</div><div class="col-span-2 text-center">Taux</div><div class="col-span-2 text-center">Motivation</div><div class="col-span-1 text-center">Note</div><div class="col-span-2 text-right">Prime</div>
             </div>
             <div id="list-d" class="flex-1 overflow-y-auto hide-scroll"><div class="p-8 text-center text-white/40"><svg class="w-8 h-8 mx-auto mb-2 spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Chargement...</div></div>
         </div>
@@ -393,7 +394,8 @@ function renderD(data) {
             ? `<div class="text-orange-400"><span class="text-sm">🔒</span> <span class="line-through opacity-60">${fmt(c.pot)}</span></div><div class="text-xs text-orange-300/70">Objectif: 95%</div>`
             : `<div>${fmt(c.sol)} Ar</div>`;
         const primeClass = primeBlocked ? 'text-orange-400' : 'text-emerald-400';
-        return `<div class="grid grid-cols-12 gap-2 px-4 py-2.5 items-center hover:bg-white/10 ${i<3?'bg-white/5':''} slide-up" style="animation-delay:${i*0.05}s">
+        const noteDisplay = c.note > 0 ? `<span class="text-yellow-400">⭐ ${c.note.toFixed(1)}</span>` : `<span class="text-white/30">--</span>`;
+        return `<div class="grid grid-cols-13 gap-2 px-4 py-2.5 items-center hover:bg-white/10 ${i<3?'bg-white/5':''} slide-up" style="animation-delay:${i*0.05}s">
             <div class="col-span-1 flex justify-center"><span class="w-9 h-9 flex items-center justify-center rounded-xl font-black ${rSty(c.rg)}">${rIco(c.rg)}</span></div>
             <div class="col-span-1 font-bold text-sm">${c.cam}</div>
             <div class="col-span-2"><span class="font-semibold">${c.chf}</span>${badge(c.rg,c.tx)}</div>
@@ -401,6 +403,7 @@ function renderD(data) {
             <div class="col-span-1 text-center"><span class="font-bold">${c.ok}</span><span class="text-white/40">/${c.tot}</span></div>
             <div class="col-span-2"><div class="flex items-center gap-2"><div class="flex-1 h-2.5 bg-white/20 rounded-full overflow-hidden"><div class="h-full ${tBg(c.tx)} rounded-full" style="width:${Math.min(c.tx,100)}%"></div></div><span class="font-bold text-sm ${tCol(c.tx)}">${c.tx.toFixed(0)}%</span></div></div>
             <div class="col-span-2 text-center"><span class="px-2 py-1 rounded-lg border text-xs font-bold ${motiv.bgColor} ${motiv.color}">${motiv.msg}</span></div>
+            <div class="col-span-1 text-center font-bold">${noteDisplay}</div>
             <div class="col-span-2 text-right font-black ${primeClass}">${primeDisplay}</div>
         </div>`;
     }).join('');
@@ -437,12 +440,13 @@ function renderM(data) {
         const primeBlocked = c.tx < 95;
         const primeClass = primeBlocked ? 'text-orange-400' : 'text-emerald-400';
         const primeText = primeBlocked ? `🔒 ${fmt(c.pot)}` : fmt(c.sol);
+        const noteDisplay = c.note > 0 ? `⭐ ${c.note.toFixed(1)}` : '--';
         return `<div class="rounded-2xl p-3 border ${rBg(c.rg)} slide-up" style="animation-delay:${i*0.05}s">
             <div class="flex items-center gap-3">
                 <div class="w-11 h-11 flex items-center justify-center rounded-xl ${rSty(c.rg)} text-lg font-bold">${rIco(c.rg)}</div>
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2"><span class="font-bold truncate">${c.chf}</span><span class="px-1.5 py-0.5 rounded text-xs font-semibold ${ti.c}">${ti.l}</span></div>
-                    <div class="flex items-center gap-1 mt-0.5 text-xs text-white/50"><span>${c.cam}</span><span>•</span><span>${c.ok}/${c.tot}</span></div>
+                    <div class="flex items-center gap-1 mt-0.5 text-xs text-white/50"><span>${c.cam}</span><span>•</span><span>${c.ok}/${c.tot}</span><span>•</span><span class="text-yellow-400">${noteDisplay}</span></div>
                 </div>
                 <div class="text-right">
                     <p class="font-black ${primeClass}">${primeText}</p>

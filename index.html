@@ -346,7 +346,7 @@ function parse(data) {
         tx: pTaux(r.Taux_Reussite || '0'),
         sol: pNum(r.Solde_Final || 0),
         pot: pNum(r.Prime_Potentielle || r.Total_Primes || 0),
-        note: parseFloat(r.Note_Moyenne || r.Note || '0') || 0,
+        note: parseFloat(String(r.Note_Moyenne || r.Note || '0').replace(',', '.')) || 0,
         mois: r.Mois || ''
     })).filter(d => d.tot > 0);
 }

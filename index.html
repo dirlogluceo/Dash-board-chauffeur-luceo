@@ -364,7 +364,7 @@ function parseHistorique(data) {
 }
 
 function renderD(data) {
-    data.sort((a,b) => b.sol - a.sol);
+    data.sort((a,b) => b.tx - a.tx);
     data.forEach((d,i) => d.rg = i + 1);
     
     const tL = data.reduce((s,d) => s + d.tot, 0);
@@ -413,7 +413,7 @@ function renderD(data) {
 }
 
 function renderM(data) {
-    data.sort((a,b) => b.sol - a.sol);
+    data.sort((a,b) => b.tx - a.tx);
     data.forEach((d,i) => d.rg = i + 1);
     
     const tL = data.reduce((s,d) => s + d.tot, 0);

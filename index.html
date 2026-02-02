@@ -159,7 +159,7 @@
             <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-yellow-500"></span>80-89%</span>
             <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span>&lt;70%</span>
         </div>
-        <span>© 2026 LUCEO Group Madagascar</span>
+        <span>© 2025 LUCEO Group Madagascar</span>
     </div>
 </div>
 
@@ -243,21 +243,23 @@
         </div>
     </div>
 
-    <div class="px-4 py-2 text-center text-xs text-white/30 border-t border-white/10">© 2026 LUCEO Group Madagascar</div>
+    <div class="px-4 py-2 text-center text-xs text-white/30 border-t border-white/10">© 2025 LUCEO Group Madagascar</div>
 </div>
 
 <script>
 // ============================================
 // CONFIGURATION - MODIFIE CES URLs
 // ============================================
-const CSV_URL_MOIS_ACTUEL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=1082479489&single=true&output=csv';  // URL CSV Dashboard_Mois_Actuel
+const CSV_URL_MOIS_ACTUEL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=809009045&single=true&output=csv';  // URL CSV Dashboard_Mois_Actuel
 const CSV_URL_HISTORIQUE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=665428733&single=true&output=csv';   // URL CSV Historique
+const CSV_URL_HISTORIQUE_CHAUFFEURS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=383405407&single=true&output=csv';
 
 const BUDGET = 1300000;
 let currentTab = 'dashboard';
 let selectedMonth = 'current';
 let allData = [];
 let historiqueData = [];
+let historiqueChauffeurData = [];
 
 // Messages de motivation
 const MSG_TAUX = {
@@ -360,6 +362,25 @@ function parseHistorique(data) {
         primes: pNum(r.Total_Primes || 0),
         penalites: pNum(r.Total_Penalites || 0),
         solde: pNum(r.Solde_Mois || 0)
+    })).filter(d => d.tot > 0);
+}
+
+function parseHistoriqueChauffeur(data) {
+    return data.filter(r => {
+        const mois = r.Mois || '';
+        const camion = r.Camion || '';
+        return mois && mois.trim() !== '' && mois !== 'Mois' && camion && camion.trim() !== '';
+    }).map(r => ({
+        mois: r.Mois || '',
+        cam: r.Camion || '',
+        typ: r.Type || 'Petit',
+        chf: r.Chauffeur || 'Non assigné',
+        tot: pNum(r.Livraisons || 0),
+        ok: Math.round(pNum(r.Livraisons || 0) * pTaux(r.Taux || '0') / 100),
+        tx: pTaux(r.Taux || '0'),
+        sol: pNum(r.Prime || 0),
+        pot: pNum(r.Prime || 0),
+        note: 0
     })).filter(d => d.tot > 0);
 }
 
@@ -599,26 +620,19 @@ async function loadData() {
     const ri = document.getElementById('ref');
     if (ri) ri.classList.add('spin');
     
+    // Charger mois actuel
     if (CSV_URL_MOIS_ACTUEL && CSV_URL_MOIS_ACTUEL.trim() !== '') {
         try {
             const r = await fetch(CSV_URL_MOIS_ACTUEL);
             const t = await r.text();
             const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
-            const d = parse(p.data);
-            allData = d;
-            renderD([...d]);
-            renderM([...d]);
+            allData = parse(p.data);
         } catch (e) {
             console.error(e);
-            document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-red-400">Erreur de chargement</div>';
-            document.getElementById('list-m').innerHTML = '<div class="py-8 text-center text-red-400">Erreur</div>';
         }
-    } else {
-        document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-amber-400"><p>Configuration requise</p><p class="text-sm text-white/40 mt-1">Ajoutez l\'URL CSV_URL_MOIS_ACTUEL</p></div>';
-        document.getElementById('list-m').innerHTML = '<div class="py-8 text-center text-amber-400"><p>Config requise</p></div>';
     }
     
-    // Charger historique
+    // Charger historique mensuel
     if (CSV_URL_HISTORIQUE && CSV_URL_HISTORIQUE.trim() !== '') {
         try {
             const r = await fetch(CSV_URL_HISTORIQUE);
@@ -631,6 +645,29 @@ async function loadData() {
         } catch (e) {
             console.error('Erreur historique:', e);
         }
+    }
+    
+    // Charger historique chauffeurs
+    if (CSV_URL_HISTORIQUE_CHAUFFEURS && CSV_URL_HISTORIQUE_CHAUFFEURS.trim() !== '') {
+        try {
+            const r = await fetch(CSV_URL_HISTORIQUE_CHAUFFEURS);
+            const t = await r.text();
+            const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
+            historiqueChauffeurData = parseHistoriqueChauffeur(p.data);
+        } catch (e) {
+            console.error('Erreur historique chauffeurs:', e);
+        }
+    }
+    
+    // Afficher selon le mois sélectionné
+    if (selectedMonth === 'current') {
+        renderD([...allData]);
+        renderM([...allData]);
+    } else {
+        // Filtrer les données du mois sélectionné
+        const dataMonth = historiqueChauffeurData.filter(d => d.mois === selectedMonth);
+        renderD([...dataMonth]);
+        renderM([...dataMonth]);
     }
     
     if (ri) setTimeout(() => ri.classList.remove('spin'), 500);

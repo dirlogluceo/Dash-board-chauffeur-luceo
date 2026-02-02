@@ -413,7 +413,7 @@ function parseHistoriqueChauffeur(data) {
         tx: pTaux(r.Taux || '0'),
         sol: pNum(r.Prime || 0),
         pot: pNum(r.Prime || 0),
-        note: 0,
+        note: parseFloat(String(r.Note || '0').replace(',', '.')) || 0,
         champion: r.Champion_Mois || ''
     })).filter(d => d.tot > 0);
 }

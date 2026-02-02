@@ -380,8 +380,15 @@ function parseHistoriqueChauffeur(data) {
         tx: pTaux(r.Taux || '0'),
         sol: pNum(r.Prime || 0),
         pot: pNum(r.Prime || 0),
-        note: 0
+        note: 0,
+        champion: r.Champion_Mois || ''
     })).filter(d => d.tot > 0);
+}
+
+function getAvailableMonths() {
+    // Récupérer les mois uniques depuis historiqueChauffeurData
+    const mois = [...new Set(historiqueChauffeurData.map(d => d.mois))].filter(m => m).sort().reverse();
+    return mois;
 }
 
 function renderD(data) {
@@ -605,7 +612,14 @@ function formatMoisLabel(mois) {
 }
 
 function populateMonthSelector(data) {
-    const mois = [...new Set(data.map(d => d.mois))].filter(m => m).sort().reverse();
+    // Utiliser les mois depuis historiqueChauffeurData si disponible
+    let mois = [];
+    if (historiqueChauffeurData && historiqueChauffeurData.length > 0) {
+        mois = [...new Set(historiqueChauffeurData.map(d => d.mois))].filter(m => m).sort().reverse();
+    } else if (data && data.length > 0) {
+        mois = [...new Set(data.map(d => d.mois))].filter(m => m).sort().reverse();
+    }
+    
     const selectD = document.getElementById('month-select-d');
     const selectM = document.getElementById('month-select-m');
     
@@ -628,7 +642,20 @@ async function loadData() {
             const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
             allData = parse(p.data);
         } catch (e) {
-            console.error(e);
+            console.error('Erreur mois actuel:', e);
+        }
+    }
+    
+    // Charger historique chauffeurs EN PREMIER (pour le sélecteur de mois)
+    if (CSV_URL_HISTORIQUE_CHAUFFEURS && CSV_URL_HISTORIQUE_CHAUFFEURS.trim() !== '') {
+        try {
+            const r = await fetch(CSV_URL_HISTORIQUE_CHAUFFEURS);
+            const t = await r.text();
+            const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
+            historiqueChauffeurData = parseHistoriqueChauffeur(p.data);
+            console.log('Historique chauffeurs chargé:', historiqueChauffeurData.length, 'lignes');
+        } catch (e) {
+            console.error('Erreur historique chauffeurs:', e);
         }
     }
     
@@ -641,33 +668,34 @@ async function loadData() {
             historiqueData = parseHistorique(p.data);
             renderHistoriqueD(historiqueData);
             renderHistoriqueM(historiqueData);
-            populateMonthSelector(historiqueData);
         } catch (e) {
             console.error('Erreur historique:', e);
         }
     }
     
-    // Charger historique chauffeurs
-    if (CSV_URL_HISTORIQUE_CHAUFFEURS && CSV_URL_HISTORIQUE_CHAUFFEURS.trim() !== '') {
-        try {
-            const r = await fetch(CSV_URL_HISTORIQUE_CHAUFFEURS);
-            const t = await r.text();
-            const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
-            historiqueChauffeurData = parseHistoriqueChauffeur(p.data);
-        } catch (e) {
-            console.error('Erreur historique chauffeurs:', e);
-        }
-    }
+    // Mettre à jour le sélecteur de mois
+    populateMonthSelector(historiqueData);
     
     // Afficher selon le mois sélectionné
     if (selectedMonth === 'current') {
-        renderD([...allData]);
-        renderM([...allData]);
+        if (allData.length > 0) {
+            renderD([...allData]);
+            renderM([...allData]);
+        } else {
+            document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée pour ce mois</div>';
+            document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Aucune donnée</div>';
+        }
     } else {
-        // Filtrer les données du mois sélectionné
+        // Filtrer les données du mois sélectionné depuis historiqueChauffeurData
         const dataMonth = historiqueChauffeurData.filter(d => d.mois === selectedMonth);
-        renderD([...dataMonth]);
-        renderM([...dataMonth]);
+        console.log('Données pour', selectedMonth, ':', dataMonth.length, 'lignes');
+        if (dataMonth.length > 0) {
+            renderD([...dataMonth]);
+            renderM([...dataMonth]);
+        } else {
+            document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée pour ce mois</div>';
+            document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Aucune donnée</div>';
+        }
     }
     
     if (ri) setTimeout(() => ri.classList.remove('spin'), 500);

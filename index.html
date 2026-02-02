@@ -250,7 +250,7 @@
 // ============================================
 // CONFIGURATION - MODIFIE CES URLs
 // ============================================
-const CSV_URL_MOIS_ACTUEL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=809009045&single=true&output=csv';  // URL CSV Dashboard_Mois_Actuel
+const CSV_URL_MOIS_ACTUEL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=1082479489&single=true&output=csv';  // URL CSV Dashboard_Mois_Actuel
 const CSV_URL_HISTORIQUE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=665428733&single=true&output=csv';   // URL CSV Historique
 const CSV_URL_HISTORIQUE_CHAUFFEURS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=383405407&single=true&output=csv';
 
@@ -331,7 +331,33 @@ function switchTab(tab) {
 
 function changeMonth(month) {
     selectedMonth = month;
-    loadData();
+    
+    // Afficher immédiatement un message de chargement
+    document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40"><svg class="w-8 h-8 mx-auto mb-2 spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Chargement...</div>';
+    document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Chargement...</div>';
+    
+    // Afficher les données après un court délai (sans recharger depuis le serveur)
+    setTimeout(() => {
+        if (selectedMonth === 'current') {
+            if (allData.length > 0) {
+                renderD([...allData]);
+                renderM([...allData]);
+            } else {
+                document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée pour ce mois</div>';
+                document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Aucune donnée</div>';
+            }
+        } else {
+            const dataMonth = historiqueChauffeurData.filter(d => d.mois === selectedMonth);
+            console.log('Données pour', selectedMonth, ':', dataMonth.length, 'lignes');
+            if (dataMonth.length > 0) {
+                renderD([...dataMonth]);
+                renderM([...dataMonth]);
+            } else {
+                document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée pour ce mois</div>';
+                document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Aucune donnée</div>';
+            }
+        }
+    }, 50);
 }
 
 function parse(data) {
@@ -623,8 +649,13 @@ function populateMonthSelector(data) {
     const selectD = document.getElementById('month-select-d');
     const selectM = document.getElementById('month-select-m');
     
-    const options = '<option value="current">Mois en cours</option>' + 
-        mois.map(m => `<option value="${m}">${formatMoisLabel(m)}</option>`).join('');
+    console.log('Mois disponibles:', mois);
+    
+    let options = '<option value="current">Mois en cours</option>';
+    mois.forEach(m => {
+        const label = formatMoisLabel(m);
+        options += `<option value="${m}">${label}</option>`;
+    });
     
     if (selectD) selectD.innerHTML = options;
     if (selectM) selectM.innerHTML = options;

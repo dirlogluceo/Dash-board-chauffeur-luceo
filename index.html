@@ -25,6 +25,9 @@
         select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.5rem center;background-size:1.5em 1.5em;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
         select option{background-color:#1a4a6e;color:white;padding:8px;}
         .tab-active{background:rgba(255,255,255,0.2);border-bottom:2px solid #e63946}
+        .site-tana{background:linear-gradient(135deg,#1a4a6e,#2563eb);border-color:#3b82f6}
+        .site-tamatave{background:linear-gradient(135deg,#065f46,#059669);border-color:#10b981}
+        .site-tous{background:linear-gradient(135deg,#4a1a6e,#7c3aed);border-color:#8b5cf6}
         .grid-cols-13{grid-template-columns:repeat(13,minmax(0,1fr))}
         .grid-cols-9{grid-template-columns:repeat(9,minmax(0,1fr))}
     </style>
@@ -60,12 +63,24 @@
             </div>
         </div>
         
-        <!-- Sélecteur de mois -->
-        <div class="flex items-center gap-3">
-            <label class="text-white/60 text-sm">Période :</label>
-            <select id="month-select-d" onchange="changeMonth(this.value)" class="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white font-semibold cursor-pointer pr-10">
-                <option value="current">Mois en cours</option>
-            </select>
+        <!-- Sélecteurs -->
+        <div class="flex items-center gap-4">
+            <!-- Sélecteur de site -->
+            <div class="flex items-center gap-2">
+                <label class="text-white/60 text-sm">Site :</label>
+                <select id="site-select-d" onchange="changeSite(this.value)" class="bg-white/10 border-2 border-white/20 rounded-lg px-4 py-2 text-white font-semibold cursor-pointer pr-10">
+                    <option value="Tous">🌍 Tous les sites</option>
+                    <option value="Tana">📍 Antananarivo</option>
+                    <option value="Tamatave">📍 Tamatave</option>
+                </select>
+            </div>
+            <!-- Sélecteur de mois -->
+            <div class="flex items-center gap-2">
+                <label class="text-white/60 text-sm">Période :</label>
+                <select id="month-select-d" onchange="changeMonth(this.value)" class="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white font-semibold cursor-pointer pr-10">
+                    <option value="current">Mois en cours</option>
+                </select>
+            </div>
         </div>
         
         <div class="text-right">
@@ -73,6 +88,12 @@
             <div id="date-d" class="text-white/50 text-sm"></div>
             <div class="flex items-center justify-end gap-1 mt-1"><span class="w-2 h-2 bg-red-500 rounded-full pulse"></span><span class="text-red-400 text-xs font-semibold">EN DIRECT</span></div>
         </div>
+    </div>
+
+    <!-- Site Indicator -->
+    <div id="site-indicator-d" class="mb-3 px-4 py-2 rounded-xl border-2 site-tous flex items-center justify-center gap-2">
+        <span class="text-2xl">🌍</span>
+        <span class="font-bold text-lg">Tous les sites</span>
     </div>
 
     <!-- Tabs -->
@@ -86,7 +107,7 @@
         <!-- Stats -->
         <div class="grid grid-cols-5 gap-3 mb-3">
             <div class="bg-white/10 rounded-2xl p-3 border border-white/20">
-                <div class="flex justify-between mb-2"><div><p class="text-white/50 text-xs uppercase">Budget</p><p class="text-xl font-black">1 300 000 Ar</p></div><span class="text-2xl">💰</span></div>
+                <div class="flex justify-between mb-2"><div><p class="text-white/50 text-xs uppercase">Budget</p><p class="text-xl font-black"><span id="budget-d">1 300 000</span> Ar</p></div><span class="text-2xl">💰</span></div>
                 <div class="h-2 bg-white/20 rounded-full overflow-hidden mb-1"><div id="bar-d" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full transition-all duration-1000" style="width:0%"></div></div>
                 <div class="flex justify-between text-xs"><span class="text-emerald-400">Distribué: <span id="used-d">0</span> Ar</span><span class="text-cyan-400">Reste: <span id="rest-d">1 300 000</span> Ar</span></div>
             </div>
@@ -106,7 +127,6 @@
 
     <!-- Content Historique -->
     <div id="content-historique-d" class="flex-1 flex flex-col overflow-hidden hidden">
-        <!-- Stats Générales -->
         <div class="grid grid-cols-5 gap-3 mb-3">
             <div class="bg-white/10 rounded-2xl p-4 border border-white/20">
                 <div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Performance Moyenne</p><p id="hist-perf-d" class="text-3xl font-black text-emerald-400">0%</p><p class="text-white/40 text-xs">tous mois confondus</p></div><span class="text-2xl">📊</span></div>
@@ -125,16 +145,13 @@
             </div>
         </div>
         
-        <!-- Tableau Historique -->
         <div class="bg-white/5 rounded-2xl border border-white/10 overflow-hidden flex flex-col flex-1">
             <div class="p-3 bg-white/10 border-b border-white/10 flex justify-between items-center">
                 <div>
                     <h2 class="text-lg font-bold">📈 Historique Mensuel</h2>
                     <p class="text-white/50 text-sm">Détail par mois</p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span id="hist-best-month-d" class="px-3 py-1 bg-yellow-500/20 border border-yellow-500/50 rounded-lg text-xs font-bold text-yellow-400">🏆 Meilleur mois : -</span>
-                </div>
+                <span id="hist-best-month-d" class="px-3 py-1 bg-yellow-500/20 border border-yellow-500/50 rounded-lg text-xs font-bold text-yellow-400">🏆 Meilleur mois : -</span>
             </div>
             <div class="grid grid-cols-9 gap-2 px-4 py-2 bg-white/5 text-xs font-bold uppercase text-white/50">
                 <div>Mois</div><div class="text-center">Livraisons</div><div class="text-center">Réussies</div><div class="text-center">Échecs</div><div class="text-center">Taux</div><div class="text-center">Note</div><div class="text-center">Primes</div><div class="text-center">Pénalités</div><div class="text-right">Solde</div>
@@ -142,7 +159,6 @@
             <div id="historique-list-d" class="flex-1 overflow-y-auto hide-scroll">
                 <div class="p-8 text-center text-white/40">Chargement de l'historique...</div>
             </div>
-            <!-- Total Général -->
             <div id="historique-total-d" class="grid grid-cols-9 gap-2 px-4 py-3 bg-white/10 border-t border-white/20 text-sm font-bold">
                 <div>TOTAL</div>
                 <div id="hist-tot-livr" class="text-center">0</div>
@@ -183,14 +199,27 @@
                     <text x="72" y="20" font-family="Poppins" font-weight="600" font-size="6" fill="white">LOG.</text>
                 </svg>
             </div>
-            <select id="month-select-m" onchange="changeMonth(this.value)" class="bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-white text-xs font-semibold cursor-pointer pr-6">
-                <option value="current">Ce mois</option>
-            </select>
+            <div class="flex gap-2">
+                <select id="site-select-m" onchange="changeSite(this.value)" class="bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-white text-xs font-semibold cursor-pointer pr-6">
+                    <option value="Tous">🌍 Tous</option>
+                    <option value="Tana">📍 Tana</option>
+                    <option value="Tamatave">📍 Tamatave</option>
+                </select>
+                <select id="month-select-m" onchange="changeMonth(this.value)" class="bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-white text-xs font-semibold cursor-pointer pr-6">
+                    <option value="current">Ce mois</option>
+                </select>
+            </div>
             <div class="text-right">
                 <div id="clock-m" class="text-sm font-bold"></div>
                 <div class="flex items-center justify-end gap-1"><span class="w-1.5 h-1.5 bg-red-500 rounded-full pulse"></span><span class="text-red-400 text-xs">LIVE</span></div>
             </div>
         </div>
+    </div>
+
+    <!-- Site Indicator Mobile -->
+    <div id="site-indicator-m" class="mx-3 mt-2 px-3 py-2 rounded-xl border-2 site-tous flex items-center justify-center gap-2">
+        <span class="text-lg">🌍</span>
+        <span class="font-bold text-sm">Tous les sites</span>
     </div>
 
     <!-- Tabs Mobile -->
@@ -202,7 +231,7 @@
     <!-- Content Dashboard Mobile -->
     <div id="content-dashboard-m" class="flex-1 flex flex-col overflow-hidden">
         <div class="px-3 py-3 grid grid-cols-3 gap-2">
-            <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Budget</span><span>💰</span></div><p class="text-sm font-black">1.3M Ar</p><div class="h-1 bg-white/20 rounded-full mt-1 overflow-hidden"><div id="bar-m" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" style="width:0%"></div></div></div>
+            <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Budget</span><span>💰</span></div><p id="budget-m" class="text-sm font-black">1.3M Ar</p><div class="h-1 bg-white/20 rounded-full mt-1 overflow-hidden"><div id="bar-m" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" style="width:0%"></div></div></div>
             <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Livraisons</span><span>📦</span></div><p id="liv-m" class="text-xl font-black">0</p></div>
             <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Taux</span><span>✅</span></div><p id="taux-m" class="text-xl font-black">0%</p></div>
             <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Satisfaction</span><span>😊</span></div><p id="satisfaction-m" class="text-lg font-black text-yellow-400">⭐ --</p></div>
@@ -214,34 +243,27 @@
 
     <!-- Content Historique Mobile -->
     <div id="content-historique-m" class="flex-1 flex flex-col overflow-hidden hidden">
-        <!-- Stats Générales Mobile -->
         <div class="px-3 py-3 grid grid-cols-2 gap-2">
             <div class="bg-white/10 rounded-xl p-3 border border-white/10">
                 <div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Perf. Moyenne</span><span>📊</span></div>
                 <p id="hist-perf-m" class="text-2xl font-black text-emerald-400">0%</p>
-                <p class="text-xs text-white/40">tous mois</p>
             </div>
             <div class="bg-white/10 rounded-xl p-3 border border-white/10">
                 <div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Total Primes</span><span>💰</span></div>
                 <p id="hist-primes-m" class="text-lg font-black text-emerald-400">0 Ar</p>
-                <p class="text-xs text-white/40">versées</p>
             </div>
             <div class="bg-white/10 rounded-xl p-3 border border-white/10">
                 <div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Total Livraisons</span><span>📦</span></div>
                 <p id="hist-livr-m" class="text-2xl font-black">0</p>
-                <p class="text-xs text-white/40">toutes périodes</p>
             </div>
             <div class="bg-white/10 rounded-xl p-3 border border-white/10">
                 <div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Moyenne/Jour</span><span>📈</span></div>
                 <p id="hist-moy-m" class="text-2xl font-black">0</p>
-                <p class="text-xs text-white/40">livr./jour</p>
             </div>
         </div>
-        
         <div class="px-3 pb-2">
             <span id="hist-best-month-m" class="inline-block px-3 py-1 bg-yellow-500/20 border border-yellow-500/50 rounded-lg text-xs font-bold text-yellow-400">🏆 Meilleur mois : -</span>
         </div>
-        
         <div class="px-4 py-2"><h2 class="text-sm font-bold">📈 Détail par Mois</h2></div>
         <div id="historique-list-m" class="flex-1 px-3 pb-4 space-y-2 overflow-y-auto hide-scroll">
             <div class="text-center py-8 text-white/40">Chargement...</div>
@@ -259,9 +281,16 @@ const CSV_URL_MOIS_ACTUEL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRp
 const CSV_URL_HISTORIQUE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=665428733&single=true&output=csv';
 const CSV_URL_HISTORIQUE_CHAUFFEURS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=383405407&single=true&output=csv';
 
-const BUDGET = 1300000;
+// Budgets par site
+const BUDGETS = {
+    'Tous': 1500000,
+    'Tana': 1300000,
+    'Tamatave': 200000
+};
+
 let currentTab = 'dashboard';
 let selectedMonth = 'current';
+let selectedSite = 'Tous';
 let allData = [];
 let historiqueData = [];
 let historiqueChauffeurData = [];
@@ -282,8 +311,7 @@ function getMotivMsg(taux) {
     else if (taux >= 80) { msgs = MSG_TAUX.bien; color = 'text-yellow-400'; bgColor = 'bg-yellow-500/20 border-yellow-500/50'; }
     else if (taux >= 70) { msgs = MSG_TAUX.moyen; color = 'text-orange-400'; bgColor = 'bg-orange-500/20 border-orange-500/50'; }
     else { msgs = MSG_TAUX.faible; color = 'text-red-400'; bgColor = 'bg-red-500/20 border-red-500/50'; }
-    const msg = msgs[Math.floor(Math.random() * msgs.length)];
-    return { msg, color, bgColor };
+    return { msg: msgs[Math.floor(Math.random() * msgs.length)], color, bgColor };
 }
 
 // Utilitaires
@@ -310,11 +338,9 @@ function clock(){
     if(cd)cd.textContent=t;if(dd)dd.textContent=d;if(cm)cm.textContent=tm;
 }
 
-// Tabs
 function switchTab(tab) {
     currentTab = tab;
-    const tabs = ['dashboard', 'historique'];
-    tabs.forEach(t => {
+    ['dashboard', 'historique'].forEach(t => {
         const btnD = document.getElementById(`tab-${t}-d`);
         const btnM = document.getElementById(`tab-${t}-m`);
         const contentD = document.getElementById(`content-${t}-d`);
@@ -333,38 +359,93 @@ function switchTab(tab) {
     });
 }
 
+function changeSite(site) {
+    selectedSite = site;
+    // Sync both selectors
+    document.getElementById('site-select-d').value = site;
+    document.getElementById('site-select-m').value = site;
+    
+    // Update site indicator
+    const indicatorD = document.getElementById('site-indicator-d');
+    const indicatorM = document.getElementById('site-indicator-m');
+    
+    let siteClass, siteIcon, siteName;
+    if (site === 'Tana') {
+        siteClass = 'site-tana';
+        siteIcon = '📍';
+        siteName = 'Antananarivo';
+    } else if (site === 'Tamatave') {
+        siteClass = 'site-tamatave';
+        siteIcon = '📍';
+        siteName = 'Tamatave';
+    } else {
+        siteClass = 'site-tous';
+        siteIcon = '🌍';
+        siteName = 'Tous les sites';
+    }
+    
+    indicatorD.className = `mb-3 px-4 py-2 rounded-xl border-2 ${siteClass} flex items-center justify-center gap-2`;
+    indicatorD.innerHTML = `<span class="text-2xl">${siteIcon}</span><span class="font-bold text-lg">${siteName}</span>`;
+    
+    indicatorM.className = `mx-3 mt-2 px-3 py-2 rounded-xl border-2 ${siteClass} flex items-center justify-center gap-2`;
+    indicatorM.innerHTML = `<span class="text-lg">${siteIcon}</span><span class="font-bold text-sm">${siteName}</span>`;
+    
+    // Update budget display
+    const budget = BUDGETS[site];
+    document.getElementById('budget-d').textContent = fmt(budget);
+    document.getElementById('budget-m').textContent = (budget/1000000).toFixed(1) + 'M';
+    
+    refreshDisplay();
+}
+
 function changeMonth(month) {
     selectedMonth = month;
+    document.getElementById('month-select-d').value = month;
+    document.getElementById('month-select-m').value = month;
+    refreshDisplay();
+}
+
+function filterBySite(data) {
+    if (selectedSite === 'Tous') return data;
+    return data.filter(d => d.site === selectedSite);
+}
+
+function refreshDisplay() {
     document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40"><svg class="w-8 h-8 mx-auto mb-2 spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Chargement...</div>';
     document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Chargement...</div>';
     
     setTimeout(() => {
+        let dataToRender;
         if (selectedMonth === 'current') {
-            if (allData.length > 0) {
-                renderD([...allData]);
-                renderM([...allData]);
-            } else {
-                document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée pour ce mois</div>';
-                document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Aucune donnée</div>';
-            }
+            dataToRender = filterBySite([...allData]);
         } else {
-            const dataMonth = historiqueChauffeurData.filter(d => d.mois === selectedMonth);
-            console.log('Données pour', selectedMonth, ':', dataMonth);
-            if (dataMonth.length > 0) {
-                renderD([...dataMonth]);
-                renderM([...dataMonth]);
-            } else {
-                document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée pour ce mois</div>';
-                document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Aucune donnée</div>';
-            }
+            dataToRender = filterBySite(historiqueChauffeurData.filter(d => d.mois === selectedMonth));
         }
+        
+        if (dataToRender.length > 0) {
+            renderD(dataToRender);
+            renderM(dataToRender);
+        } else {
+            document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée pour cette sélection</div>';
+            document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Aucune donnée</div>';
+            // Reset stats
+            document.getElementById('liv-d').textContent = '0';
+            document.getElementById('taux-d').textContent = '0%';
+            document.getElementById('chauf-d').textContent = '0';
+            document.getElementById('satisfaction-d').innerHTML = '⭐ --';
+        }
+        
+        // Render historique with site filter
+        const histFiltered = filterBySite([...historiqueData]);
+        renderHistoriqueD(histFiltered);
+        renderHistoriqueM(histFiltered);
     }, 50);
 }
 
 function parse(data) {
     return data.filter(r => {
         const camion = r.Camion || '';
-        return camion && camion.trim() !== '' && camion !== 'TOTAL' && !camion.includes('Budget') && !camion.includes('SUIVI') && camion.match(/^[0-9A-Z]/);
+        return camion && camion.trim() !== '' && camion !== 'TOTAL' && !camion.includes('Budget') && camion.match(/^[0-9A-Z]/);
     }).map(r => ({
         cam: r.Camion || '',
         typ: r.Type || 'Petit',
@@ -376,6 +457,7 @@ function parse(data) {
         sol: pNum(r.Solde_Final || 0),
         pot: pNum(r.Prime_Potentielle || r.Total_Primes || 0),
         note: pNote(r.Note_Moyenne || r.Note || 0),
+        site: r.Site || 'Tana',
         mois: r.Mois || ''
     })).filter(d => d.tot > 0);
 }
@@ -389,50 +471,36 @@ function parseHistorique(data) {
         primes: pNum(r.Total_Primes || 0),
         penalites: pNum(r.Total_Penalites || 0),
         solde: pNum(r.Solde_Mois || 0),
-        note: pNote(r.Note_Moyenne || r.Note || 0)
+        note: pNote(r.Note_Moyenne || r.Note || 0),
+        site: r.Site || 'Tana'
     })).filter(d => d.tot > 0);
 }
 
-// FONCTION CORRIGÉE - récupère maintenant la Note
 function parseHistoriqueChauffeur(data) {
-    console.log('Raw data sample:', data.slice(0, 2)); // Debug
     return data.filter(r => {
         const mois = r.Mois || '';
         const camion = r.Camion || '';
         return mois && mois.trim() !== '' && mois !== 'Mois' && camion && camion.trim() !== '';
-    }).map(r => {
-        // Debug: afficher les clés disponibles
-        if (!window._keysLogged) {
-            console.log('Colonnes disponibles:', Object.keys(r));
-            window._keysLogged = true;
-        }
-        const noteValue = pNote(r.Note || r.Note_Moyenne || 0);
-        return {
-            mois: r.Mois || '',
-            cam: r.Camion || '',
-            typ: r.Type || 'Petit',
-            chf: r.Chauffeur || 'Non assigné',
-            tot: pNum(r.Livraisons || 0),
-            ok: Math.round(pNum(r.Livraisons || 0) * pTaux(r.Taux || '0') / 100),
-            tx: pTaux(r.Taux || '0'),
-            sol: pNum(r.Prime || 0),
-            pot: pNum(r.Prime || 0),
-            note: noteValue,
-            champion: r.Champion_Mois || ''
-        };
-    }).filter(d => d.tot > 0);
+    }).map(r => ({
+        mois: r.Mois || '',
+        cam: r.Camion || '',
+        typ: r.Type || 'Petit',
+        chf: r.Chauffeur || 'Non assigné',
+        tot: pNum(r.Livraisons || 0),
+        ok: Math.round(pNum(r.Livraisons || 0) * pTaux(r.Taux || '0') / 100),
+        tx: pTaux(r.Taux || '0'),
+        sol: pNum(r.Prime || 0),
+        pot: pNum(r.Prime || 0),
+        note: pNote(r.Note || 0),
+        site: r.Site || 'Tana'
+    })).filter(d => d.tot > 0);
 }
 
 function populateMonthSelector(data) {
     let mois = [];
     if (historiqueChauffeurData && historiqueChauffeurData.length > 0) {
         mois = [...new Set(historiqueChauffeurData.map(d => d.mois))].filter(m => m).sort().reverse();
-    } else if (data && data.length > 0) {
-        mois = [...new Set(data.map(d => d.mois))].filter(m => m).sort().reverse();
     }
-    
-    const selectD = document.getElementById('month-select-d');
-    const selectM = document.getElementById('month-select-m');
     
     let options = '<option value="current">Mois en cours</option>';
     mois.forEach(m => {
@@ -440,20 +508,20 @@ function populateMonthSelector(data) {
         options += `<option value="${m}">${label}</option>`;
     });
     
-    if (selectD) selectD.innerHTML = options;
-    if (selectM) selectM.innerHTML = options;
+    document.getElementById('month-select-d').innerHTML = options;
+    document.getElementById('month-select-m').innerHTML = options;
 }
 
 function renderD(data) {
     data.sort((a,b) => b.tx - a.tx);
     data.forEach((d,i) => d.rg = i + 1);
     
+    const budget = BUDGETS[selectedSite];
     const tL = data.reduce((s,d) => s + d.tot, 0);
     const tO = data.reduce((s,d) => s + d.ok, 0);
     const tM = tL > 0 ? ((tO/tL)*100).toFixed(1) : 0;
     const tS = data.reduce((s,d) => s + d.sol, 0);
     
-    // Calcul satisfaction moyenne
     const notesValides = data.filter(d => d.note > 0);
     const satMoy = notesValides.length > 0 ? (notesValides.reduce((s,d) => s + d.note, 0) / notesValides.length).toFixed(1) : 0;
     
@@ -461,12 +529,12 @@ function renderD(data) {
     document.getElementById('taux-d').textContent = tM + '%';
     document.getElementById('chauf-d').textContent = data.length;
     document.getElementById('used-d').textContent = fmt(tS);
-    document.getElementById('rest-d').textContent = fmt(Math.max(0, BUDGET - tS));
+    document.getElementById('rest-d').textContent = fmt(Math.max(0, budget - tS));
     document.getElementById('satisfaction-d').innerHTML = satMoy > 0 ? `⭐ ${satMoy}` : '⭐ --';
-    setTimeout(() => { document.getElementById('bar-d').style.width = Math.min((tS/BUDGET)*100, 100) + '%'; }, 100);
+    setTimeout(() => { document.getElementById('bar-d').style.width = Math.min((tS/budget)*100, 100) + '%'; }, 100);
     
     const el = document.getElementById('list-d');
-    if (data.length === 0) { el.innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée pour ce mois</div>'; return; }
+    if (data.length === 0) { el.innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée</div>'; return; }
     
     el.innerHTML = data.map((c,i) => {
         const motiv = getMotivMsg(c.tx);
@@ -494,6 +562,7 @@ function renderM(data) {
     data.sort((a,b) => b.tx - a.tx);
     data.forEach((d,i) => d.rg = i + 1);
     
+    const budget = BUDGETS[selectedSite];
     const tL = data.reduce((s,d) => s + d.tot, 0);
     const tO = data.reduce((s,d) => s + d.ok, 0);
     const tM = tL > 0 ? ((tO/tL)*100).toFixed(1) : 0;
@@ -506,7 +575,7 @@ function renderM(data) {
     document.getElementById('taux-m').textContent = tM + '%';
     document.getElementById('chauf-m').textContent = data.length;
     document.getElementById('satisfaction-m').innerHTML = satMoy > 0 ? `⭐ ${satMoy}` : '⭐ --';
-    document.getElementById('bar-m').style.width = Math.min((tS/BUDGET)*100, 100) + '%';
+    document.getElementById('bar-m').style.width = Math.min((tS/budget)*100, 100) + '%';
     
     const el = document.getElementById('list-m');
     if (data.length === 0) { el.innerHTML = '<div class="text-center py-8 text-white/40">Aucune donnée</div>'; return; }
@@ -541,7 +610,7 @@ function renderM(data) {
 
 function renderHistoriqueD(data) {
     const el = document.getElementById('historique-list-d');
-    if (data.length === 0) { el.innerHTML = '<div class="p-8 text-center text-white/40">Aucun historique disponible</div>'; return; }
+    if (data.length === 0) { el.innerHTML = '<div class="p-8 text-center text-white/40">Aucun historique</div>'; return; }
     
     const totalLivr = data.reduce((s, h) => s + h.tot, 0);
     const totalOk = data.reduce((s, h) => s + h.ok, 0);
@@ -558,7 +627,7 @@ function renderHistoriqueD(data) {
     const joursTotal = nbMois * 22;
     const moyJour = joursTotal > 0 ? (totalLivr / joursTotal).toFixed(1) : 0;
     
-    const meilleurMois = data.reduce((best, h) => h.tx > best.tx ? h : best, data[0]);
+    const meilleurMois = data.length > 0 ? data.reduce((best, h) => h.tx > best.tx ? h : best, data[0]) : null;
     
     document.getElementById('hist-perf-d').textContent = perfMoyenne.toFixed(1) + '%';
     document.getElementById('hist-perf-d').className = `text-3xl font-black ${tCol(perfMoyenne)}`;
@@ -566,7 +635,7 @@ function renderHistoriqueD(data) {
     document.getElementById('hist-livr-d').textContent = totalLivr.toLocaleString();
     document.getElementById('hist-moy-d').textContent = moyJour;
     document.getElementById('hist-satisfaction-d').innerHTML = noteMoyenne > 0 ? `⭐ ${noteMoyenne.toFixed(1)}` : '⭐ --';
-    document.getElementById('hist-best-month-d').textContent = `🏆 Meilleur mois : ${formatMoisLabel(meilleurMois.mois)} (${meilleurMois.tx.toFixed(1)}%)`;
+    document.getElementById('hist-best-month-d').textContent = meilleurMois ? `🏆 Meilleur mois : ${formatMoisLabel(meilleurMois.mois)} (${meilleurMois.tx.toFixed(1)}%)` : '🏆 Meilleur mois : -';
     
     document.getElementById('hist-tot-livr').textContent = totalLivr.toLocaleString();
     document.getElementById('hist-tot-ok').textContent = totalOk.toLocaleString();
@@ -581,7 +650,7 @@ function renderHistoriqueD(data) {
     el.innerHTML = data.map((h, i) => {
         const moisLabel = formatMoisLabel(h.mois);
         const echecs = h.tot - h.ok;
-        const isBest = h.mois === meilleurMois.mois;
+        const isBest = meilleurMois && h.mois === meilleurMois.mois;
         const noteDisplay = h.note > 0 ? `⭐ ${h.note.toFixed(1)}` : '--';
         return `<div class="grid grid-cols-9 gap-2 px-4 py-3 items-center hover:bg-white/10 ${isBest?'bg-yellow-500/10 border-l-4 border-yellow-500':i%2===0?'bg-white/5':''} slide-up" style="animation-delay:${i*0.05}s">
             <div class="font-bold flex items-center gap-2">${isBest?'🏆':''} ${moisLabel}</div>
@@ -606,26 +675,23 @@ function renderHistoriqueM(data) {
     const totalPrimes = data.reduce((s, h) => s + h.primes, 0);
     const perfMoyenne = totalLivr > 0 ? (totalOk / totalLivr * 100) : 0;
     
-    const notesValides = data.filter(h => h.note > 0);
-    const noteMoyenne = notesValides.length > 0 ? (notesValides.reduce((s, h) => s + h.note, 0) / notesValides.length) : 0;
-    
     const nbMois = data.length;
     const joursTotal = nbMois * 22;
     const moyJour = joursTotal > 0 ? (totalLivr / joursTotal).toFixed(1) : 0;
     
-    const meilleurMois = data.reduce((best, h) => h.tx > best.tx ? h : best, data[0]);
+    const meilleurMois = data.length > 0 ? data.reduce((best, h) => h.tx > best.tx ? h : best, data[0]) : null;
     
     document.getElementById('hist-perf-m').textContent = perfMoyenne.toFixed(1) + '%';
     document.getElementById('hist-perf-m').className = `text-2xl font-black ${tCol(perfMoyenne)}`;
     document.getElementById('hist-primes-m').textContent = fmt(totalPrimes) + ' Ar';
     document.getElementById('hist-livr-m').textContent = totalLivr.toLocaleString();
     document.getElementById('hist-moy-m').textContent = moyJour;
-    document.getElementById('hist-best-month-m').textContent = `🏆 Meilleur : ${formatMoisLabel(meilleurMois.mois)} (${meilleurMois.tx.toFixed(0)}%)`;
+    document.getElementById('hist-best-month-m').textContent = meilleurMois ? `🏆 Meilleur : ${formatMoisLabel(meilleurMois.mois)} (${meilleurMois.tx.toFixed(0)}%)` : '🏆 -';
     
     el.innerHTML = data.map((h, i) => {
         const moisLabel = formatMoisLabel(h.mois);
         const echecs = h.tot - h.ok;
-        const isBest = h.mois === meilleurMois.mois;
+        const isBest = meilleurMois && h.mois === meilleurMois.mois;
         const noteDisplay = h.note > 0 ? `⭐ ${h.note.toFixed(1)}` : '--';
         return `<div class="rounded-xl p-3 border ${isBest?'bg-yellow-500/10 border-yellow-500/50':'bg-white/5 border-white/10'} slide-up" style="animation-delay:${i*0.05}s">
             <div class="flex justify-between items-center mb-2">
@@ -639,10 +705,6 @@ function renderHistoriqueM(data) {
                 <div class="text-center"><p class="text-white/50">Taux</p><p class="font-bold ${tCol(h.tx)}">${h.tx.toFixed(0)}%</p></div>
                 <div class="text-center"><p class="text-white/50">Note</p><p class="font-bold text-yellow-400">${noteDisplay}</p></div>
             </div>
-            <div class="mt-2 flex justify-between text-xs">
-                <span class="text-emerald-400">Primes: ${fmt(h.primes)}</span>
-                <span class="text-red-400">Pénalités: ${fmt(h.penalites)}</span>
-            </div>
         </div>`;
     }).join('');
 }
@@ -650,9 +712,7 @@ function renderHistoriqueM(data) {
 function formatMoisLabel(mois) {
     const months = {'01':'Janvier','02':'Février','03':'Mars','04':'Avril','05':'Mai','06':'Juin','07':'Juillet','08':'Août','09':'Septembre','10':'Octobre','11':'Novembre','12':'Décembre'};
     const parts = mois.split('-');
-    if (parts.length === 2) {
-        return `${months[parts[1]] || parts[1]} ${parts[0]}`;
-    }
+    if (parts.length === 2) return `${months[parts[1]] || parts[1]} ${parts[0]}`;
     return mois;
 }
 
@@ -660,66 +720,32 @@ async function loadData() {
     const ri = document.getElementById('ref');
     if (ri) ri.classList.add('spin');
     
-    // Charger mois actuel
-    if (CSV_URL_MOIS_ACTUEL && CSV_URL_MOIS_ACTUEL.trim() !== '') {
-        try {
-            const r = await fetch(CSV_URL_MOIS_ACTUEL);
-            const t = await r.text();
-            const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
-            allData = parse(p.data);
-        } catch (e) {
-            console.error('Erreur mois actuel:', e);
-        }
-    }
+    try {
+        const r1 = await fetch(CSV_URL_MOIS_ACTUEL);
+        const t1 = await r1.text();
+        const p1 = Papa.parse(t1, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
+        allData = parse(p1.data);
+        console.log('Mois actuel chargé:', allData.length, 'lignes');
+    } catch (e) { console.error('Erreur mois actuel:', e); }
     
-    // Charger historique chauffeurs
-    if (CSV_URL_HISTORIQUE_CHAUFFEURS && CSV_URL_HISTORIQUE_CHAUFFEURS.trim() !== '') {
-        try {
-            const r = await fetch(CSV_URL_HISTORIQUE_CHAUFFEURS);
-            const t = await r.text();
-            const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
-            historiqueChauffeurData = parseHistoriqueChauffeur(p.data);
-            console.log('Historique chauffeurs chargé:', historiqueChauffeurData.length, 'lignes');
-            console.log('Exemple de données:', historiqueChauffeurData.slice(0, 3));
-        } catch (e) {
-            console.error('Erreur historique chauffeurs:', e);
-        }
-    }
+    try {
+        const r2 = await fetch(CSV_URL_HISTORIQUE_CHAUFFEURS);
+        const t2 = await r2.text();
+        const p2 = Papa.parse(t2, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
+        historiqueChauffeurData = parseHistoriqueChauffeur(p2.data);
+        console.log('Historique chauffeurs:', historiqueChauffeurData.length, 'lignes');
+    } catch (e) { console.error('Erreur historique chauffeurs:', e); }
     
-    // Charger historique mensuel
-    if (CSV_URL_HISTORIQUE && CSV_URL_HISTORIQUE.trim() !== '') {
-        try {
-            const r = await fetch(CSV_URL_HISTORIQUE);
-            const t = await r.text();
-            const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
-            historiqueData = parseHistorique(p.data);
-            renderHistoriqueD(historiqueData);
-            renderHistoriqueM(historiqueData);
-        } catch (e) {
-            console.error('Erreur historique:', e);
-        }
-    }
+    try {
+        const r3 = await fetch(CSV_URL_HISTORIQUE);
+        const t3 = await r3.text();
+        const p3 = Papa.parse(t3, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
+        historiqueData = parseHistorique(p3.data);
+        console.log('Historique mensuel:', historiqueData.length, 'lignes');
+    } catch (e) { console.error('Erreur historique:', e); }
     
-    populateMonthSelector(historiqueData);
-    
-    if (selectedMonth === 'current') {
-        if (allData.length > 0) {
-            renderD([...allData]);
-            renderM([...allData]);
-        } else {
-            document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée pour ce mois</div>';
-            document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Aucune donnée</div>';
-        }
-    } else {
-        const dataMonth = historiqueChauffeurData.filter(d => d.mois === selectedMonth);
-        if (dataMonth.length > 0) {
-            renderD([...dataMonth]);
-            renderM([...dataMonth]);
-        } else {
-            document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée pour ce mois</div>';
-            document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Aucune donnée</div>';
-        }
-    }
+    populateMonthSelector();
+    refreshDisplay();
     
     if (ri) setTimeout(() => ri.classList.remove('spin'), 500);
 }

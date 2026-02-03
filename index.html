@@ -19,7 +19,6 @@
         @keyframes pulse{0%,100%{box-shadow:0 0 10px rgba(230,57,70,0.4)}50%{box-shadow:0 0 30px rgba(230,57,70,0.8)}}.pulse{animation:pulse 2s ease-in-out infinite}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.spin{animation:spin 1s linear infinite}
         @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.slide-up{animation:slideUp 0.5s ease-out forwards}
-        @keyframes confetti{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}.confetti{animation:confetti 3s ease-out forwards}
         .hide-scroll::-webkit-scrollbar{display:none}.hide-scroll{-ms-overflow-style:none;scrollbar-width:none}
         @media(min-width:768px){.mobile-only{display:none!important}.desktop-only{display:flex!important}}
         @media(max-width:767px){.mobile-only{display:flex!important}.desktop-only{display:none!important}}
@@ -93,7 +92,7 @@
             </div>
             <div class="bg-white/10 rounded-2xl p-3 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Livraisons</p><p id="liv-d" class="text-3xl font-black">0</p><p class="text-white/40 text-xs">ce mois</p></div><span class="text-2xl">📦</span></div></div>
             <div class="bg-white/10 rounded-2xl p-3 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Taux Réussite</p><p id="taux-d" class="text-3xl font-black">0%</p><p class="text-white/40 text-xs">moyenne</p></div><span class="text-2xl">✅</span></div></div>
-            <div class="bg-white/10 rounded-2xl p-3 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Satisfaction</p><p id="satisfaction-d" class="text-2xl font-black text-yellow-400">⭐ 0.0</p><p class="text-white/40 text-xs">note client</p></div><span class="text-2xl">😊</span></div></div>
+            <div class="bg-white/10 rounded-2xl p-3 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Satisfaction</p><p id="satisfaction-d" class="text-2xl font-black text-yellow-400">⭐ --</p><p class="text-white/40 text-xs">note client</p></div><span class="text-2xl">😊</span></div></div>
             <div class="bg-white/10 rounded-2xl p-3 border border-white/20"><div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Camions</p><p id="chauf-d" class="text-3xl font-black">0</p><p class="text-white/40 text-xs">actifs</p></div><span class="text-2xl">🚛</span></div></div>
         </div>
         <!-- Table -->
@@ -206,7 +205,7 @@
             <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Budget</span><span>💰</span></div><p class="text-sm font-black">1.3M Ar</p><div class="h-1 bg-white/20 rounded-full mt-1 overflow-hidden"><div id="bar-m" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" style="width:0%"></div></div></div>
             <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Livraisons</span><span>📦</span></div><p id="liv-m" class="text-xl font-black">0</p></div>
             <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Taux</span><span>✅</span></div><p id="taux-m" class="text-xl font-black">0%</p></div>
-            <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Satisfaction</span><span>😊</span></div><p id="satisfaction-m" class="text-lg font-black text-yellow-400">⭐ 0.0</p></div>
+            <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Satisfaction</span><span>😊</span></div><p id="satisfaction-m" class="text-lg font-black text-yellow-400">⭐ --</p></div>
             <div class="bg-white/10 rounded-xl p-2 border border-white/10 col-span-2"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Camions actifs</span><span>🚛</span></div><p id="chauf-m" class="text-xl font-black">0</p></div>
         </div>
         <div class="px-4 py-2 flex justify-between items-center"><h2 class="text-sm font-bold">🏆 Classement</h2><button onclick="loadData()" class="text-xs text-white/50 bg-white/10 px-3 py-1 rounded-full flex items-center gap-1"><svg id="ref" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Actualiser</button></div>
@@ -254,10 +253,10 @@
 
 <script>
 // ============================================
-// CONFIGURATION - MODIFIE CES URLs
+// CONFIGURATION
 // ============================================
-const CSV_URL_MOIS_ACTUEL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=1082479489&single=true&output=csv';  // URL CSV Dashboard_Mois_Actuel
-const CSV_URL_HISTORIQUE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=665428733&single=true&output=csv';   // URL CSV Historique
+const CSV_URL_MOIS_ACTUEL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=1082479489&single=true&output=csv';
+const CSV_URL_HISTORIQUE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=665428733&single=true&output=csv';
 const CSV_URL_HISTORIQUE_CHAUFFEURS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=383405407&single=true&output=csv';
 
 const BUDGET = 1300000;
@@ -291,6 +290,7 @@ function getMotivMsg(taux) {
 const fmt = v => new Intl.NumberFormat('fr-MG').format(Math.round(v));
 const pTaux = s => s ? parseFloat(String(s).replace('%','').replace(',','.')) || 0 : 0;
 const pNum = v => v ? parseInt(String(v).replace(/[^\d-]/g,'')) || 0 : 0;
+const pNote = v => v ? parseFloat(String(v).replace(',', '.')) || 0 : 0;
 const tCol = t => t>=95?'text-emerald-400':t>=90?'text-green-400':t>=80?'text-yellow-400':t>=70?'text-orange-400':'text-red-400';
 const tBg = t => t>=95?'bg-emerald-500':t>=90?'bg-green-500':t>=80?'bg-yellow-500':t>=70?'bg-orange-500':'bg-red-500';
 const rSty = r => r===1?'gold-badge text-yellow-900':r===2?'silver-badge text-gray-800':r===3?'bronze-badge text-amber-100':'bg-white/20 text-white';
@@ -300,8 +300,6 @@ const badge = (r,t) => r===1?'<span class="ml-1 px-1.5 py-0.5 gold-badge text-xs
 const tSty = t => {const v=String(t||'').toLowerCase();return v.includes('gros')?'bg-purple-500/30 text-purple-300':v.includes('moyen')?'bg-blue-500/30 text-blue-300':'bg-cyan-500/30 text-cyan-300';};
 const tLbl = t => {const v=String(t||'').toLowerCase();return v.includes('gros')?'Gros':v.includes('moyen')?'Moyen':'Petit';};
 const tLblS = t => {const v=String(t||'').toLowerCase();return v.includes('gros')?{l:'Gros',c:'bg-purple-500/30 text-purple-300'}:v.includes('moyen')?{l:'Moyen',c:'bg-blue-500/30 text-blue-300'}:{l:'Petit',c:'bg-cyan-500/30 text-cyan-300'};};
-
-function confetti(){const c=document.getElementById('confetti-box'),cols=['#ffd700','#e63946','#1a4a6e','#10b981'];for(let i=0;i<40;i++){setTimeout(()=>{const d=document.createElement('div');d.className='confetti absolute w-3 h-3 rounded-sm';d.style.left=Math.random()*100+'%';d.style.top='-20px';d.style.backgroundColor=cols[Math.floor(Math.random()*cols.length)];c.appendChild(d);setTimeout(()=>d.remove(),3500);},i*40);}}
 
 function clock(){
     const n=new Date();
@@ -337,12 +335,9 @@ function switchTab(tab) {
 
 function changeMonth(month) {
     selectedMonth = month;
-    
-    // Afficher immédiatement un message de chargement
     document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40"><svg class="w-8 h-8 mx-auto mb-2 spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Chargement...</div>';
     document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Chargement...</div>';
     
-    // Afficher les données après un court délai (sans recharger depuis le serveur)
     setTimeout(() => {
         if (selectedMonth === 'current') {
             if (allData.length > 0) {
@@ -354,7 +349,7 @@ function changeMonth(month) {
             }
         } else {
             const dataMonth = historiqueChauffeurData.filter(d => d.mois === selectedMonth);
-            console.log('Données pour', selectedMonth, ':', dataMonth.length, 'lignes');
+            console.log('Données pour', selectedMonth, ':', dataMonth);
             if (dataMonth.length > 0) {
                 renderD([...dataMonth]);
                 renderM([...dataMonth]);
@@ -380,7 +375,7 @@ function parse(data) {
         tx: pTaux(r.Taux_Reussite || '0'),
         sol: pNum(r.Solde_Final || 0),
         pot: pNum(r.Prime_Potentielle || r.Total_Primes || 0),
-        note: parseFloat(String(r.Note_Moyenne || r.Note || '0').replace(',', '.')) || 0,
+        note: pNote(r.Note_Moyenne || r.Note || 0),
         mois: r.Mois || ''
     })).filter(d => d.tot > 0);
 }
@@ -394,34 +389,59 @@ function parseHistorique(data) {
         primes: pNum(r.Total_Primes || 0),
         penalites: pNum(r.Total_Penalites || 0),
         solde: pNum(r.Solde_Mois || 0),
-        note: parseFloat(String(r.Note_Moyenne || r.Note || '0').replace(',', '.')) || 0
+        note: pNote(r.Note_Moyenne || r.Note || 0)
     })).filter(d => d.tot > 0);
 }
 
+// FONCTION CORRIGÉE - récupère maintenant la Note
 function parseHistoriqueChauffeur(data) {
+    console.log('Raw data sample:', data.slice(0, 2)); // Debug
     return data.filter(r => {
         const mois = r.Mois || '';
         const camion = r.Camion || '';
         return mois && mois.trim() !== '' && mois !== 'Mois' && camion && camion.trim() !== '';
-    }).map(r => ({
-        mois: r.Mois || '',
-        cam: r.Camion || '',
-        typ: r.Type || 'Petit',
-        chf: r.Chauffeur || 'Non assigné',
-        tot: pNum(r.Livraisons || 0),
-        ok: Math.round(pNum(r.Livraisons || 0) * pTaux(r.Taux || '0') / 100),
-        tx: pTaux(r.Taux || '0'),
-        sol: pNum(r.Prime || 0),
-        pot: pNum(r.Prime || 0),
-        note: parseFloat(String(r.Note || '0').replace(',', '.')) || 0,
-        champion: r.Champion_Mois || ''
-    })).filter(d => d.tot > 0);
+    }).map(r => {
+        // Debug: afficher les clés disponibles
+        if (!window._keysLogged) {
+            console.log('Colonnes disponibles:', Object.keys(r));
+            window._keysLogged = true;
+        }
+        const noteValue = pNote(r.Note || r.Note_Moyenne || 0);
+        return {
+            mois: r.Mois || '',
+            cam: r.Camion || '',
+            typ: r.Type || 'Petit',
+            chf: r.Chauffeur || 'Non assigné',
+            tot: pNum(r.Livraisons || 0),
+            ok: Math.round(pNum(r.Livraisons || 0) * pTaux(r.Taux || '0') / 100),
+            tx: pTaux(r.Taux || '0'),
+            sol: pNum(r.Prime || 0),
+            pot: pNum(r.Prime || 0),
+            note: noteValue,
+            champion: r.Champion_Mois || ''
+        };
+    }).filter(d => d.tot > 0);
 }
 
-function getAvailableMonths() {
-    // Récupérer les mois uniques depuis historiqueChauffeurData
-    const mois = [...new Set(historiqueChauffeurData.map(d => d.mois))].filter(m => m).sort().reverse();
-    return mois;
+function populateMonthSelector(data) {
+    let mois = [];
+    if (historiqueChauffeurData && historiqueChauffeurData.length > 0) {
+        mois = [...new Set(historiqueChauffeurData.map(d => d.mois))].filter(m => m).sort().reverse();
+    } else if (data && data.length > 0) {
+        mois = [...new Set(data.map(d => d.mois))].filter(m => m).sort().reverse();
+    }
+    
+    const selectD = document.getElementById('month-select-d');
+    const selectM = document.getElementById('month-select-m');
+    
+    let options = '<option value="current">Mois en cours</option>';
+    mois.forEach(m => {
+        const label = formatMoisLabel(m);
+        options += `<option value="${m}">${label}</option>`;
+    });
+    
+    if (selectD) selectD.innerHTML = options;
+    if (selectM) selectM.innerHTML = options;
 }
 
 function renderD(data) {
@@ -468,9 +488,6 @@ function renderD(data) {
             <div class="col-span-2 text-right font-black ${primeClass}">${primeDisplay}</div>
         </div>`;
     }).join('');
-    
-    // Confettis désactivés
-    // if (data.some(d => d.tx >= 100)) confetti();
 }
 
 function renderM(data) {
@@ -482,7 +499,6 @@ function renderM(data) {
     const tM = tL > 0 ? ((tO/tL)*100).toFixed(1) : 0;
     const tS = data.reduce((s,d) => s + d.sol, 0);
     
-    // Calcul satisfaction moyenne
     const notesValides = data.filter(d => d.note > 0);
     const satMoy = notesValides.length > 0 ? (notesValides.reduce((s,d) => s + d.note, 0) / notesValides.length).toFixed(1) : 0;
     
@@ -525,12 +541,8 @@ function renderM(data) {
 
 function renderHistoriqueD(data) {
     const el = document.getElementById('historique-list-d');
-    if (data.length === 0) { 
-        el.innerHTML = '<div class="p-8 text-center text-white/40">Aucun historique disponible</div>'; 
-        return; 
-    }
+    if (data.length === 0) { el.innerHTML = '<div class="p-8 text-center text-white/40">Aucun historique disponible</div>'; return; }
     
-    // Calculs des stats générales
     const totalLivr = data.reduce((s, h) => s + h.tot, 0);
     const totalOk = data.reduce((s, h) => s + h.ok, 0);
     const totalKo = totalLivr - totalOk;
@@ -539,19 +551,15 @@ function renderHistoriqueD(data) {
     const totalSolde = data.reduce((s, h) => s + h.solde, 0);
     const perfMoyenne = totalLivr > 0 ? (totalOk / totalLivr * 100) : 0;
     
-    // Note moyenne générale
     const notesValides = data.filter(h => h.note > 0);
     const noteMoyenne = notesValides.length > 0 ? (notesValides.reduce((s, h) => s + h.note, 0) / notesValides.length) : 0;
     
-    // Moyenne par jour (environ 22 jours ouvrés par mois)
     const nbMois = data.length;
     const joursTotal = nbMois * 22;
     const moyJour = joursTotal > 0 ? (totalLivr / joursTotal).toFixed(1) : 0;
     
-    // Meilleur mois
     const meilleurMois = data.reduce((best, h) => h.tx > best.tx ? h : best, data[0]);
     
-    // Afficher les stats
     document.getElementById('hist-perf-d').textContent = perfMoyenne.toFixed(1) + '%';
     document.getElementById('hist-perf-d').className = `text-3xl font-black ${tCol(perfMoyenne)}`;
     document.getElementById('hist-primes-d').textContent = fmt(totalPrimes) + ' Ar';
@@ -560,7 +568,6 @@ function renderHistoriqueD(data) {
     document.getElementById('hist-satisfaction-d').innerHTML = noteMoyenne > 0 ? `⭐ ${noteMoyenne.toFixed(1)}` : '⭐ --';
     document.getElementById('hist-best-month-d').textContent = `🏆 Meilleur mois : ${formatMoisLabel(meilleurMois.mois)} (${meilleurMois.tx.toFixed(1)}%)`;
     
-    // Afficher les totaux
     document.getElementById('hist-tot-livr').textContent = totalLivr.toLocaleString();
     document.getElementById('hist-tot-ok').textContent = totalOk.toLocaleString();
     document.getElementById('hist-tot-ko').textContent = totalKo.toLocaleString();
@@ -571,7 +578,6 @@ function renderHistoriqueD(data) {
     document.getElementById('hist-tot-pen').textContent = fmt(totalPenalites);
     document.getElementById('hist-tot-solde').textContent = fmt(totalSolde) + ' Ar';
     
-    // Tableau détaillé
     el.innerHTML = data.map((h, i) => {
         const moisLabel = formatMoisLabel(h.mois);
         const echecs = h.tot - h.ok;
@@ -593,30 +599,22 @@ function renderHistoriqueD(data) {
 
 function renderHistoriqueM(data) {
     const el = document.getElementById('historique-list-m');
-    if (data.length === 0) { 
-        el.innerHTML = '<div class="text-center py-8 text-white/40">Aucun historique</div>'; 
-        return; 
-    }
+    if (data.length === 0) { el.innerHTML = '<div class="text-center py-8 text-white/40">Aucun historique</div>'; return; }
     
-    // Calculs des stats générales
     const totalLivr = data.reduce((s, h) => s + h.tot, 0);
     const totalOk = data.reduce((s, h) => s + h.ok, 0);
     const totalPrimes = data.reduce((s, h) => s + h.primes, 0);
     const perfMoyenne = totalLivr > 0 ? (totalOk / totalLivr * 100) : 0;
     
-    // Note moyenne
     const notesValides = data.filter(h => h.note > 0);
     const noteMoyenne = notesValides.length > 0 ? (notesValides.reduce((s, h) => s + h.note, 0) / notesValides.length) : 0;
     
-    // Moyenne par jour
     const nbMois = data.length;
     const joursTotal = nbMois * 22;
     const moyJour = joursTotal > 0 ? (totalLivr / joursTotal).toFixed(1) : 0;
     
-    // Meilleur mois
     const meilleurMois = data.reduce((best, h) => h.tx > best.tx ? h : best, data[0]);
     
-    // Afficher les stats mobile
     document.getElementById('hist-perf-m').textContent = perfMoyenne.toFixed(1) + '%';
     document.getElementById('hist-perf-m').className = `text-2xl font-black ${tCol(perfMoyenne)}`;
     document.getElementById('hist-primes-m').textContent = fmt(totalPrimes) + ' Ar';
@@ -658,30 +656,6 @@ function formatMoisLabel(mois) {
     return mois;
 }
 
-function populateMonthSelector(data) {
-    // Utiliser les mois depuis historiqueChauffeurData si disponible
-    let mois = [];
-    if (historiqueChauffeurData && historiqueChauffeurData.length > 0) {
-        mois = [...new Set(historiqueChauffeurData.map(d => d.mois))].filter(m => m).sort().reverse();
-    } else if (data && data.length > 0) {
-        mois = [...new Set(data.map(d => d.mois))].filter(m => m).sort().reverse();
-    }
-    
-    const selectD = document.getElementById('month-select-d');
-    const selectM = document.getElementById('month-select-m');
-    
-    console.log('Mois disponibles:', mois);
-    
-    let options = '<option value="current">Mois en cours</option>';
-    mois.forEach(m => {
-        const label = formatMoisLabel(m);
-        options += `<option value="${m}">${label}</option>`;
-    });
-    
-    if (selectD) selectD.innerHTML = options;
-    if (selectM) selectM.innerHTML = options;
-}
-
 async function loadData() {
     const ri = document.getElementById('ref');
     if (ri) ri.classList.add('spin');
@@ -698,7 +672,7 @@ async function loadData() {
         }
     }
     
-    // Charger historique chauffeurs EN PREMIER (pour le sélecteur de mois)
+    // Charger historique chauffeurs
     if (CSV_URL_HISTORIQUE_CHAUFFEURS && CSV_URL_HISTORIQUE_CHAUFFEURS.trim() !== '') {
         try {
             const r = await fetch(CSV_URL_HISTORIQUE_CHAUFFEURS);
@@ -706,6 +680,7 @@ async function loadData() {
             const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
             historiqueChauffeurData = parseHistoriqueChauffeur(p.data);
             console.log('Historique chauffeurs chargé:', historiqueChauffeurData.length, 'lignes');
+            console.log('Exemple de données:', historiqueChauffeurData.slice(0, 3));
         } catch (e) {
             console.error('Erreur historique chauffeurs:', e);
         }
@@ -725,10 +700,8 @@ async function loadData() {
         }
     }
     
-    // Mettre à jour le sélecteur de mois
     populateMonthSelector(historiqueData);
     
-    // Afficher selon le mois sélectionné
     if (selectedMonth === 'current') {
         if (allData.length > 0) {
             renderD([...allData]);
@@ -738,9 +711,7 @@ async function loadData() {
             document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Aucune donnée</div>';
         }
     } else {
-        // Filtrer les données du mois sélectionné depuis historiqueChauffeurData
         const dataMonth = historiqueChauffeurData.filter(d => d.mois === selectedMonth);
-        console.log('Données pour', selectedMonth, ':', dataMonth.length, 'lignes');
         if (dataMonth.length > 0) {
             renderD([...dataMonth]);
             renderM([...dataMonth]);

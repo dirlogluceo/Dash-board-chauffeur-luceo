@@ -25,11 +25,12 @@
         select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.5rem center;background-size:1.5em 1.5em;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
         select option{background-color:#1a4a6e;color:white;padding:8px;}
         .tab-active{background:rgba(255,255,255,0.2);border-bottom:2px solid #e63946}
-        .site-tana{background:linear-gradient(135deg,#1a4a6e,#2563eb);border-color:#3b82f6}
-        .site-tamatave{background:linear-gradient(135deg,#065f46,#059669);border-color:#10b981}
-        .site-tous{background:linear-gradient(135deg,#4a1a6e,#7c3aed);border-color:#8b5cf6}
         .grid-cols-13{grid-template-columns:repeat(13,minmax(0,1fr))}
         .grid-cols-9{grid-template-columns:repeat(9,minmax(0,1fr))}
+        .site-tana{background:linear-gradient(135deg,#1a4a6e,#0d2840)}
+        .site-tamatave{background:linear-gradient(135deg,#2d5a3d,#1a3d2a)}
+        .site-badge-tana{background:#3b82f6;color:white}
+        .site-badge-tamatave{background:#10b981;color:white}
     </style>
 </head>
 <body class="text-white">
@@ -68,10 +69,10 @@
             <!-- Sélecteur de site -->
             <div class="flex items-center gap-2">
                 <label class="text-white/60 text-sm">Site :</label>
-                <select id="site-select-d" onchange="changeSite(this.value)" class="bg-white/10 border-2 border-white/20 rounded-lg px-4 py-2 text-white font-semibold cursor-pointer pr-10">
-                    <option value="Tous">🌍 Tous les sites</option>
-                    <option value="Tana">📍 Antananarivo</option>
-                    <option value="Tamatave">📍 Tamatave</option>
+                <select id="site-select-d" onchange="changeSite(this.value)" class="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white font-semibold cursor-pointer pr-10">
+                    <option value="all">Tous les sites</option>
+                    <option value="Tana">🏙️ Antananarivo</option>
+                    <option value="Tamatave">🌴 Tamatave</option>
                 </select>
             </div>
             <!-- Sélecteur de mois -->
@@ -90,10 +91,9 @@
         </div>
     </div>
 
-    <!-- Site Indicator -->
-    <div id="site-indicator-d" class="mb-3 px-4 py-2 rounded-xl border-2 site-tous flex items-center justify-center gap-2">
-        <span class="text-2xl">🌍</span>
-        <span class="font-bold text-lg">Tous les sites</span>
+    <!-- Site indicator -->
+    <div id="site-indicator-d" class="mb-2 hidden">
+        <span class="px-3 py-1 rounded-full text-sm font-bold"></span>
     </div>
 
     <!-- Tabs -->
@@ -107,7 +107,7 @@
         <!-- Stats -->
         <div class="grid grid-cols-5 gap-3 mb-3">
             <div class="bg-white/10 rounded-2xl p-3 border border-white/20">
-                <div class="flex justify-between mb-2"><div><p class="text-white/50 text-xs uppercase">Budget</p><p class="text-xl font-black"><span id="budget-d">1 300 000</span> Ar</p></div><span class="text-2xl">💰</span></div>
+                <div class="flex justify-between mb-2"><div><p class="text-white/50 text-xs uppercase">Budget</p><p id="budget-label-d" class="text-xl font-black">1 300 000 Ar</p></div><span class="text-2xl">💰</span></div>
                 <div class="h-2 bg-white/20 rounded-full overflow-hidden mb-1"><div id="bar-d" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full transition-all duration-1000" style="width:0%"></div></div>
                 <div class="flex justify-between text-xs"><span class="text-emerald-400">Distribué: <span id="used-d">0</span> Ar</span><span class="text-cyan-400">Reste: <span id="rest-d">1 300 000</span> Ar</span></div>
             </div>
@@ -199,11 +199,11 @@
                     <text x="72" y="20" font-family="Poppins" font-weight="600" font-size="6" fill="white">LOG.</text>
                 </svg>
             </div>
-            <div class="flex gap-2">
+            <div class="flex items-center gap-2">
                 <select id="site-select-m" onchange="changeSite(this.value)" class="bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-white text-xs font-semibold cursor-pointer pr-6">
-                    <option value="Tous">🌍 Tous</option>
-                    <option value="Tana">📍 Tana</option>
-                    <option value="Tamatave">📍 Tamatave</option>
+                    <option value="all">Tous</option>
+                    <option value="Tana">🏙️ Tana</option>
+                    <option value="Tamatave">🌴 Tamatave</option>
                 </select>
                 <select id="month-select-m" onchange="changeMonth(this.value)" class="bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-white text-xs font-semibold cursor-pointer pr-6">
                     <option value="current">Ce mois</option>
@@ -216,10 +216,9 @@
         </div>
     </div>
 
-    <!-- Site Indicator Mobile -->
-    <div id="site-indicator-m" class="mx-3 mt-2 px-3 py-2 rounded-xl border-2 site-tous flex items-center justify-center gap-2">
-        <span class="text-lg">🌍</span>
-        <span class="font-bold text-sm">Tous les sites</span>
+    <!-- Site indicator mobile -->
+    <div id="site-indicator-m" class="px-3 py-1 hidden">
+        <span class="px-2 py-0.5 rounded-full text-xs font-bold"></span>
     </div>
 
     <!-- Tabs Mobile -->
@@ -231,7 +230,7 @@
     <!-- Content Dashboard Mobile -->
     <div id="content-dashboard-m" class="flex-1 flex flex-col overflow-hidden">
         <div class="px-3 py-3 grid grid-cols-3 gap-2">
-            <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Budget</span><span>💰</span></div><p id="budget-m" class="text-sm font-black">1.3M Ar</p><div class="h-1 bg-white/20 rounded-full mt-1 overflow-hidden"><div id="bar-m" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" style="width:0%"></div></div></div>
+            <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Budget</span><span>💰</span></div><p id="budget-label-m" class="text-sm font-black">1.3M Ar</p><div class="h-1 bg-white/20 rounded-full mt-1 overflow-hidden"><div id="bar-m" class="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" style="width:0%"></div></div></div>
             <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Livraisons</span><span>📦</span></div><p id="liv-m" class="text-xl font-black">0</p></div>
             <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Taux</span><span>✅</span></div><p id="taux-m" class="text-xl font-black">0%</p></div>
             <div class="bg-white/10 rounded-xl p-2 border border-white/10"><div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Satisfaction</span><span>😊</span></div><p id="satisfaction-m" class="text-lg font-black text-yellow-400">⭐ --</p></div>
@@ -261,9 +260,11 @@
                 <p id="hist-moy-m" class="text-2xl font-black">0</p>
             </div>
         </div>
+        
         <div class="px-3 pb-2">
             <span id="hist-best-month-m" class="inline-block px-3 py-1 bg-yellow-500/20 border border-yellow-500/50 rounded-lg text-xs font-bold text-yellow-400">🏆 Meilleur mois : -</span>
         </div>
+        
         <div class="px-4 py-2"><h2 class="text-sm font-bold">📈 Détail par Mois</h2></div>
         <div id="historique-list-m" class="flex-1 px-3 pb-4 space-y-2 overflow-y-auto hide-scroll">
             <div class="text-center py-8 text-white/40">Chargement...</div>
@@ -283,14 +284,14 @@ const CSV_URL_HISTORIQUE_CHAUFFEURS = 'https://docs.google.com/spreadsheets/d/e/
 
 // Budgets par site
 const BUDGETS = {
-    'Tous': 1500000,
+    'all': 1300000,
     'Tana': 1300000,
-    'Tamatave': 200000
+    'Tamatave': 500000
 };
 
 let currentTab = 'dashboard';
 let selectedMonth = 'current';
-let selectedSite = 'Tous';
+let selectedSite = 'all';
 let allData = [];
 let historiqueData = [];
 let historiqueChauffeurData = [];
@@ -311,7 +312,8 @@ function getMotivMsg(taux) {
     else if (taux >= 80) { msgs = MSG_TAUX.bien; color = 'text-yellow-400'; bgColor = 'bg-yellow-500/20 border-yellow-500/50'; }
     else if (taux >= 70) { msgs = MSG_TAUX.moyen; color = 'text-orange-400'; bgColor = 'bg-orange-500/20 border-orange-500/50'; }
     else { msgs = MSG_TAUX.faible; color = 'text-red-400'; bgColor = 'bg-red-500/20 border-red-500/50'; }
-    return { msg: msgs[Math.floor(Math.random() * msgs.length)], color, bgColor };
+    const msg = msgs[Math.floor(Math.random() * msgs.length)];
+    return { msg, color, bgColor };
 }
 
 // Utilitaires
@@ -328,6 +330,7 @@ const badge = (r,t) => r===1?'<span class="ml-1 px-1.5 py-0.5 gold-badge text-xs
 const tSty = t => {const v=String(t||'').toLowerCase();return v.includes('gros')?'bg-purple-500/30 text-purple-300':v.includes('moyen')?'bg-blue-500/30 text-blue-300':'bg-cyan-500/30 text-cyan-300';};
 const tLbl = t => {const v=String(t||'').toLowerCase();return v.includes('gros')?'Gros':v.includes('moyen')?'Moyen':'Petit';};
 const tLblS = t => {const v=String(t||'').toLowerCase();return v.includes('gros')?{l:'Gros',c:'bg-purple-500/30 text-purple-300'}:v.includes('moyen')?{l:'Moyen',c:'bg-blue-500/30 text-blue-300'}:{l:'Petit',c:'bg-cyan-500/30 text-cyan-300'};};
+const siteBadge = s => s === 'Tana' ? 'site-badge-tana' : s === 'Tamatave' ? 'site-badge-tamatave' : '';
 
 function clock(){
     const n=new Date();
@@ -340,7 +343,8 @@ function clock(){
 
 function switchTab(tab) {
     currentTab = tab;
-    ['dashboard', 'historique'].forEach(t => {
+    const tabs = ['dashboard', 'historique'];
+    tabs.forEach(t => {
         const btnD = document.getElementById(`tab-${t}-d`);
         const btnM = document.getElementById(`tab-${t}-m`);
         const contentD = document.getElementById(`content-${t}-d`);
@@ -361,65 +365,72 @@ function switchTab(tab) {
 
 function changeSite(site) {
     selectedSite = site;
-    // Sync both selectors
+    // Sync les deux sélecteurs
     document.getElementById('site-select-d').value = site;
     document.getElementById('site-select-m').value = site;
     
     // Update site indicator
-    const indicatorD = document.getElementById('site-indicator-d');
-    const indicatorM = document.getElementById('site-indicator-m');
+    updateSiteIndicator();
     
-    let siteClass, siteIcon, siteName;
-    if (site === 'Tana') {
-        siteClass = 'site-tana';
-        siteIcon = '📍';
-        siteName = 'Antananarivo';
-    } else if (site === 'Tamatave') {
-        siteClass = 'site-tamatave';
-        siteIcon = '📍';
-        siteName = 'Tamatave';
+    // Update budget label
+    updateBudgetLabel();
+    
+    // Re-render avec le filtre
+    applyFiltersAndRender();
+}
+
+function updateSiteIndicator() {
+    const indD = document.getElementById('site-indicator-d');
+    const indM = document.getElementById('site-indicator-m');
+    
+    if (selectedSite === 'all') {
+        indD.classList.add('hidden');
+        indM.classList.add('hidden');
     } else {
-        siteClass = 'site-tous';
-        siteIcon = '🌍';
-        siteName = 'Tous les sites';
+        const emoji = selectedSite === 'Tana' ? '🏙️' : '🌴';
+        const badgeClass = selectedSite === 'Tana' ? 'site-badge-tana' : 'site-badge-tamatave';
+        const label = selectedSite === 'Tana' ? 'Antananarivo' : 'Tamatave';
+        
+        indD.classList.remove('hidden');
+        indD.querySelector('span').className = `px-3 py-1 rounded-full text-sm font-bold ${badgeClass}`;
+        indD.querySelector('span').textContent = `${emoji} ${label}`;
+        
+        indM.classList.remove('hidden');
+        indM.querySelector('span').className = `px-2 py-0.5 rounded-full text-xs font-bold ${badgeClass}`;
+        indM.querySelector('span').textContent = `${emoji} ${label}`;
     }
-    
-    indicatorD.className = `mb-3 px-4 py-2 rounded-xl border-2 ${siteClass} flex items-center justify-center gap-2`;
-    indicatorD.innerHTML = `<span class="text-2xl">${siteIcon}</span><span class="font-bold text-lg">${siteName}</span>`;
-    
-    indicatorM.className = `mx-3 mt-2 px-3 py-2 rounded-xl border-2 ${siteClass} flex items-center justify-center gap-2`;
-    indicatorM.innerHTML = `<span class="text-lg">${siteIcon}</span><span class="font-bold text-sm">${siteName}</span>`;
-    
-    // Update budget display
-    const budget = BUDGETS[site];
-    document.getElementById('budget-d').textContent = fmt(budget);
-    document.getElementById('budget-m').textContent = (budget/1000000).toFixed(1) + 'M';
-    
-    refreshDisplay();
+}
+
+function updateBudgetLabel() {
+    const budget = BUDGETS[selectedSite] || BUDGETS['all'];
+    document.getElementById('budget-label-d').textContent = fmt(budget) + ' Ar';
+    document.getElementById('budget-label-m').textContent = (budget / 1000000).toFixed(1) + 'M Ar';
 }
 
 function changeMonth(month) {
     selectedMonth = month;
     document.getElementById('month-select-d').value = month;
     document.getElementById('month-select-m').value = month;
-    refreshDisplay();
+    applyFiltersAndRender();
 }
 
 function filterBySite(data) {
-    if (selectedSite === 'Tous') return data;
+    if (selectedSite === 'all') return data;
     return data.filter(d => d.site === selectedSite);
 }
 
-function refreshDisplay() {
+function applyFiltersAndRender() {
     document.getElementById('list-d').innerHTML = '<div class="p-8 text-center text-white/40"><svg class="w-8 h-8 mx-auto mb-2 spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Chargement...</div>';
     document.getElementById('list-m').innerHTML = '<div class="text-center py-8 text-white/40">Chargement...</div>';
     
     setTimeout(() => {
-        let dataToRender;
+        let dataToRender = [];
+        
         if (selectedMonth === 'current') {
             dataToRender = filterBySite([...allData]);
         } else {
-            dataToRender = filterBySite(historiqueChauffeurData.filter(d => d.mois === selectedMonth));
+            const dataMonth = historiqueChauffeurData.filter(d => d.mois === selectedMonth);
+            dataToRender = filterBySite([...dataMonth]);
         }
         
         if (dataToRender.length > 0) {
@@ -435,7 +446,7 @@ function refreshDisplay() {
             document.getElementById('satisfaction-d').innerHTML = '⭐ --';
         }
         
-        // Render historique with site filter
+        // Render historique filtré
         const histFiltered = filterBySite([...historiqueData]);
         renderHistoriqueD(histFiltered);
         renderHistoriqueM(histFiltered);
@@ -445,7 +456,7 @@ function refreshDisplay() {
 function parse(data) {
     return data.filter(r => {
         const camion = r.Camion || '';
-        return camion && camion.trim() !== '' && camion !== 'TOTAL' && !camion.includes('Budget') && camion.match(/^[0-9A-Z]/);
+        return camion && camion.trim() !== '' && camion !== 'TOTAL' && !camion.includes('Budget') && !camion.includes('SUIVI') && camion.match(/^[0-9A-Z]/);
     }).map(r => ({
         cam: r.Camion || '',
         typ: r.Type || 'Petit',
@@ -457,8 +468,8 @@ function parse(data) {
         sol: pNum(r.Solde_Final || 0),
         pot: pNum(r.Prime_Potentielle || r.Total_Primes || 0),
         note: pNote(r.Note_Moyenne || r.Note || 0),
-        site: r.Site || 'Tana',
-        mois: r.Mois || ''
+        mois: r.Mois || '',
+        site: r.Site || 'Tana'
     })).filter(d => d.tot > 0);
 }
 
@@ -500,7 +511,12 @@ function populateMonthSelector(data) {
     let mois = [];
     if (historiqueChauffeurData && historiqueChauffeurData.length > 0) {
         mois = [...new Set(historiqueChauffeurData.map(d => d.mois))].filter(m => m).sort().reverse();
+    } else if (data && data.length > 0) {
+        mois = [...new Set(data.map(d => d.mois))].filter(m => m).sort().reverse();
     }
+    
+    const selectD = document.getElementById('month-select-d');
+    const selectM = document.getElementById('month-select-m');
     
     let options = '<option value="current">Mois en cours</option>';
     mois.forEach(m => {
@@ -508,15 +524,15 @@ function populateMonthSelector(data) {
         options += `<option value="${m}">${label}</option>`;
     });
     
-    document.getElementById('month-select-d').innerHTML = options;
-    document.getElementById('month-select-m').innerHTML = options;
+    if (selectD) selectD.innerHTML = options;
+    if (selectM) selectM.innerHTML = options;
 }
 
 function renderD(data) {
     data.sort((a,b) => b.tx - a.tx);
     data.forEach((d,i) => d.rg = i + 1);
     
-    const budget = BUDGETS[selectedSite];
+    const budget = BUDGETS[selectedSite] || BUDGETS['all'];
     const tL = data.reduce((s,d) => s + d.tot, 0);
     const tO = data.reduce((s,d) => s + d.ok, 0);
     const tM = tL > 0 ? ((tO/tL)*100).toFixed(1) : 0;
@@ -534,7 +550,7 @@ function renderD(data) {
     setTimeout(() => { document.getElementById('bar-d').style.width = Math.min((tS/budget)*100, 100) + '%'; }, 100);
     
     const el = document.getElementById('list-d');
-    if (data.length === 0) { el.innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée</div>'; return; }
+    if (data.length === 0) { el.innerHTML = '<div class="p-8 text-center text-white/40">Aucune donnée pour cette sélection</div>'; return; }
     
     el.innerHTML = data.map((c,i) => {
         const motiv = getMotivMsg(c.tx);
@@ -544,9 +560,10 @@ function renderD(data) {
             : `<div>${fmt(c.sol)} Ar</div>`;
         const primeClass = primeBlocked ? 'text-orange-400' : 'text-emerald-400';
         const noteDisplay = c.note > 0 ? `<span class="text-yellow-400">⭐ ${c.note.toFixed(1)}</span>` : `<span class="text-white/30">--</span>`;
+        const siteIcon = c.site === 'Tamatave' ? '<span class="ml-1 text-xs">🌴</span>' : '';
         return `<div class="grid grid-cols-13 gap-2 px-4 py-2.5 items-center hover:bg-white/10 ${i<3?'bg-white/5':''} slide-up" style="animation-delay:${i*0.05}s">
             <div class="col-span-1 flex justify-center"><span class="w-9 h-9 flex items-center justify-center rounded-xl font-black ${rSty(c.rg)}">${rIco(c.rg)}</span></div>
-            <div class="col-span-1 font-bold text-sm">${c.cam}</div>
+            <div class="col-span-1 font-bold text-sm">${c.cam}${siteIcon}</div>
             <div class="col-span-2"><span class="font-semibold">${c.chf}</span>${badge(c.rg,c.tx)}</div>
             <div class="col-span-1 text-center"><span class="px-2 py-0.5 rounded text-xs font-bold ${tSty(c.typ)}">${tLbl(c.typ)}</span></div>
             <div class="col-span-1 text-center"><span class="font-bold">${c.ok}</span><span class="text-white/40">/${c.tot}</span></div>
@@ -562,7 +579,7 @@ function renderM(data) {
     data.sort((a,b) => b.tx - a.tx);
     data.forEach((d,i) => d.rg = i + 1);
     
-    const budget = BUDGETS[selectedSite];
+    const budget = BUDGETS[selectedSite] || BUDGETS['all'];
     const tL = data.reduce((s,d) => s + d.tot, 0);
     const tO = data.reduce((s,d) => s + d.ok, 0);
     const tM = tL > 0 ? ((tO/tL)*100).toFixed(1) : 0;
@@ -587,11 +604,12 @@ function renderM(data) {
         const primeClass = primeBlocked ? 'text-orange-400' : 'text-emerald-400';
         const primeText = primeBlocked ? `🔒 ${fmt(c.pot)}` : fmt(c.sol);
         const noteDisplay = c.note > 0 ? `⭐ ${c.note.toFixed(1)}` : '--';
+        const siteIcon = c.site === 'Tamatave' ? '🌴 ' : '';
         return `<div class="rounded-2xl p-3 border ${rBg(c.rg)} slide-up" style="animation-delay:${i*0.05}s">
             <div class="flex items-center gap-3">
                 <div class="w-11 h-11 flex items-center justify-center rounded-xl ${rSty(c.rg)} text-lg font-bold">${rIco(c.rg)}</div>
                 <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2"><span class="font-bold truncate">${c.chf}</span><span class="px-1.5 py-0.5 rounded text-xs font-semibold ${ti.c}">${ti.l}</span></div>
+                    <div class="flex items-center gap-2"><span class="font-bold truncate">${siteIcon}${c.chf}</span><span class="px-1.5 py-0.5 rounded text-xs font-semibold ${ti.c}">${ti.l}</span></div>
                     <div class="flex items-center gap-1 mt-0.5 text-xs text-white/50"><span>${c.cam}</span><span>•</span><span>${c.ok}/${c.tot}</span><span>•</span><span class="text-yellow-400">${noteDisplay}</span></div>
                 </div>
                 <div class="text-right">
@@ -610,7 +628,7 @@ function renderM(data) {
 
 function renderHistoriqueD(data) {
     const el = document.getElementById('historique-list-d');
-    if (data.length === 0) { el.innerHTML = '<div class="p-8 text-center text-white/40">Aucun historique</div>'; return; }
+    if (data.length === 0) { el.innerHTML = '<div class="p-8 text-center text-white/40">Aucun historique disponible</div>'; return; }
     
     const totalLivr = data.reduce((s, h) => s + h.tot, 0);
     const totalOk = data.reduce((s, h) => s + h.ok, 0);
@@ -627,7 +645,7 @@ function renderHistoriqueD(data) {
     const joursTotal = nbMois * 22;
     const moyJour = joursTotal > 0 ? (totalLivr / joursTotal).toFixed(1) : 0;
     
-    const meilleurMois = data.length > 0 ? data.reduce((best, h) => h.tx > best.tx ? h : best, data[0]) : null;
+    const meilleurMois = data.reduce((best, h) => h.tx > best.tx ? h : best, data[0]);
     
     document.getElementById('hist-perf-d').textContent = perfMoyenne.toFixed(1) + '%';
     document.getElementById('hist-perf-d').className = `text-3xl font-black ${tCol(perfMoyenne)}`;
@@ -635,7 +653,7 @@ function renderHistoriqueD(data) {
     document.getElementById('hist-livr-d').textContent = totalLivr.toLocaleString();
     document.getElementById('hist-moy-d').textContent = moyJour;
     document.getElementById('hist-satisfaction-d').innerHTML = noteMoyenne > 0 ? `⭐ ${noteMoyenne.toFixed(1)}` : '⭐ --';
-    document.getElementById('hist-best-month-d').textContent = meilleurMois ? `🏆 Meilleur mois : ${formatMoisLabel(meilleurMois.mois)} (${meilleurMois.tx.toFixed(1)}%)` : '🏆 Meilleur mois : -';
+    document.getElementById('hist-best-month-d').textContent = `🏆 Meilleur mois : ${formatMoisLabel(meilleurMois.mois)} (${meilleurMois.tx.toFixed(1)}%)`;
     
     document.getElementById('hist-tot-livr').textContent = totalLivr.toLocaleString();
     document.getElementById('hist-tot-ok').textContent = totalOk.toLocaleString();
@@ -650,7 +668,7 @@ function renderHistoriqueD(data) {
     el.innerHTML = data.map((h, i) => {
         const moisLabel = formatMoisLabel(h.mois);
         const echecs = h.tot - h.ok;
-        const isBest = meilleurMois && h.mois === meilleurMois.mois;
+        const isBest = h.mois === meilleurMois.mois;
         const noteDisplay = h.note > 0 ? `⭐ ${h.note.toFixed(1)}` : '--';
         return `<div class="grid grid-cols-9 gap-2 px-4 py-3 items-center hover:bg-white/10 ${isBest?'bg-yellow-500/10 border-l-4 border-yellow-500':i%2===0?'bg-white/5':''} slide-up" style="animation-delay:${i*0.05}s">
             <div class="font-bold flex items-center gap-2">${isBest?'🏆':''} ${moisLabel}</div>
@@ -679,19 +697,19 @@ function renderHistoriqueM(data) {
     const joursTotal = nbMois * 22;
     const moyJour = joursTotal > 0 ? (totalLivr / joursTotal).toFixed(1) : 0;
     
-    const meilleurMois = data.length > 0 ? data.reduce((best, h) => h.tx > best.tx ? h : best, data[0]) : null;
+    const meilleurMois = data.reduce((best, h) => h.tx > best.tx ? h : best, data[0]);
     
     document.getElementById('hist-perf-m').textContent = perfMoyenne.toFixed(1) + '%';
     document.getElementById('hist-perf-m').className = `text-2xl font-black ${tCol(perfMoyenne)}`;
     document.getElementById('hist-primes-m').textContent = fmt(totalPrimes) + ' Ar';
     document.getElementById('hist-livr-m').textContent = totalLivr.toLocaleString();
     document.getElementById('hist-moy-m').textContent = moyJour;
-    document.getElementById('hist-best-month-m').textContent = meilleurMois ? `🏆 Meilleur : ${formatMoisLabel(meilleurMois.mois)} (${meilleurMois.tx.toFixed(0)}%)` : '🏆 -';
+    document.getElementById('hist-best-month-m').textContent = `🏆 Meilleur : ${formatMoisLabel(meilleurMois.mois)} (${meilleurMois.tx.toFixed(0)}%)`;
     
     el.innerHTML = data.map((h, i) => {
         const moisLabel = formatMoisLabel(h.mois);
         const echecs = h.tot - h.ok;
-        const isBest = meilleurMois && h.mois === meilleurMois.mois;
+        const isBest = h.mois === meilleurMois.mois;
         const noteDisplay = h.note > 0 ? `⭐ ${h.note.toFixed(1)}` : '--';
         return `<div class="rounded-xl p-3 border ${isBest?'bg-yellow-500/10 border-yellow-500/50':'bg-white/5 border-white/10'} slide-up" style="animation-delay:${i*0.05}s">
             <div class="flex justify-between items-center mb-2">
@@ -705,6 +723,10 @@ function renderHistoriqueM(data) {
                 <div class="text-center"><p class="text-white/50">Taux</p><p class="font-bold ${tCol(h.tx)}">${h.tx.toFixed(0)}%</p></div>
                 <div class="text-center"><p class="text-white/50">Note</p><p class="font-bold text-yellow-400">${noteDisplay}</p></div>
             </div>
+            <div class="mt-2 flex justify-between text-xs">
+                <span class="text-emerald-400">Primes: ${fmt(h.primes)}</span>
+                <span class="text-red-400">Pénalités: ${fmt(h.penalites)}</span>
+            </div>
         </div>`;
     }).join('');
 }
@@ -712,7 +734,9 @@ function renderHistoriqueM(data) {
 function formatMoisLabel(mois) {
     const months = {'01':'Janvier','02':'Février','03':'Mars','04':'Avril','05':'Mai','06':'Juin','07':'Juillet','08':'Août','09':'Septembre','10':'Octobre','11':'Novembre','12':'Décembre'};
     const parts = mois.split('-');
-    if (parts.length === 2) return `${months[parts[1]] || parts[1]} ${parts[0]}`;
+    if (parts.length === 2) {
+        return `${months[parts[1]] || parts[1]} ${parts[0]}`;
+    }
     return mois;
 }
 
@@ -720,32 +744,44 @@ async function loadData() {
     const ri = document.getElementById('ref');
     if (ri) ri.classList.add('spin');
     
-    try {
-        const r1 = await fetch(CSV_URL_MOIS_ACTUEL);
-        const t1 = await r1.text();
-        const p1 = Papa.parse(t1, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
-        allData = parse(p1.data);
-        console.log('Mois actuel chargé:', allData.length, 'lignes');
-    } catch (e) { console.error('Erreur mois actuel:', e); }
+    // Timestamp anti-cache pour forcer le rechargement des données fraîches
+    const timestamp = new Date().getTime();
     
-    try {
-        const r2 = await fetch(CSV_URL_HISTORIQUE_CHAUFFEURS);
-        const t2 = await r2.text();
-        const p2 = Papa.parse(t2, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
-        historiqueChauffeurData = parseHistoriqueChauffeur(p2.data);
-        console.log('Historique chauffeurs:', historiqueChauffeurData.length, 'lignes');
-    } catch (e) { console.error('Erreur historique chauffeurs:', e); }
+    if (CSV_URL_MOIS_ACTUEL && CSV_URL_MOIS_ACTUEL.trim() !== '') {
+        try {
+            const r = await fetch(CSV_URL_MOIS_ACTUEL + '&_t=' + timestamp);
+            const t = await r.text();
+            const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
+            allData = parse(p.data);
+        } catch (e) {
+            console.error('Erreur mois actuel:', e);
+        }
+    }
     
-    try {
-        const r3 = await fetch(CSV_URL_HISTORIQUE);
-        const t3 = await r3.text();
-        const p3 = Papa.parse(t3, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
-        historiqueData = parseHistorique(p3.data);
-        console.log('Historique mensuel:', historiqueData.length, 'lignes');
-    } catch (e) { console.error('Erreur historique:', e); }
+    if (CSV_URL_HISTORIQUE_CHAUFFEURS && CSV_URL_HISTORIQUE_CHAUFFEURS.trim() !== '') {
+        try {
+            const r = await fetch(CSV_URL_HISTORIQUE_CHAUFFEURS + '&_t=' + timestamp);
+            const t = await r.text();
+            const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
+            historiqueChauffeurData = parseHistoriqueChauffeur(p.data);
+        } catch (e) {
+            console.error('Erreur historique chauffeurs:', e);
+        }
+    }
     
-    populateMonthSelector();
-    refreshDisplay();
+    if (CSV_URL_HISTORIQUE && CSV_URL_HISTORIQUE.trim() !== '') {
+        try {
+            const r = await fetch(CSV_URL_HISTORIQUE + '&_t=' + timestamp);
+            const t = await r.text();
+            const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
+            historiqueData = parseHistorique(p.data);
+        } catch (e) {
+            console.error('Erreur historique:', e);
+        }
+    }
+    
+    populateMonthSelector(historiqueData);
+    applyFiltersAndRender();
     
     if (ri) setTimeout(() => ri.classList.remove('spin'), 500);
 }

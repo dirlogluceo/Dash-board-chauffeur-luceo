@@ -842,12 +842,12 @@ function formatMoisLabel(mois) {
 // ============================================
 // TENDANCES - GRAPHIQUES
 // ============================================
-const CSV_URL_SAISIE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=0&single=true&output=csv';
+const CSV_URL_SAISIE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=809009045&single=true&output=csv';
 
 function parseSaisie(data) {
-    return data.filter(r => r.Date && r.Heure_Depart).map(r => ({
-        date: r.Date || '',
-        heure: r.Heure_Depart || '',
+    return data.filter(r => r.Date && (r.Heure_Depart || r.Heure_Arrivee)).map(r => ({
+        date: r.Mois || r.Date || '',  // Utilise Mois (format YYYY-MM) ou Date
+        heure: r.Heure_Depart || r.Heure_Arrivee || '',
         camion: r.Camion || '',
         chauffeur: r.Chauffeur || '',
         statut: r.Statut || '',

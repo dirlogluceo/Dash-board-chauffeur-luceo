@@ -8,6 +8,7 @@
     <title>Dashboard Performance - LUCEO Logistique</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -100,6 +101,7 @@
     <div class="flex gap-1 mb-3">
         <button id="tab-dashboard-d" onclick="switchTab('dashboard')" class="px-4 py-2 rounded-t-lg text-sm font-semibold tab-active">📊 Dashboard</button>
         <button id="tab-historique-d" onclick="switchTab('historique')" class="px-4 py-2 rounded-t-lg text-sm font-semibold bg-white/5 hover:bg-white/10">📈 Historique</button>
+        <button id="tab-tendances-d" onclick="switchTab('tendances')" class="px-4 py-2 rounded-t-lg text-sm font-semibold bg-white/5 hover:bg-white/10">📉 Tendances</button>
     </div>
 
     <!-- Content Dashboard -->
@@ -173,6 +175,49 @@
         </div>
     </div>
 
+    <!-- Content Tendances -->
+    <div id="content-tendances-d" class="flex-1 flex flex-col overflow-hidden hidden">
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-4 gap-3 mb-3">
+            <div class="bg-white/10 rounded-2xl p-3 border border-white/20">
+                <div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Jour le plus chargé</p><p id="jour-max-d" class="text-xl font-black">--</p><p id="jour-max-detail-d" class="text-white/40 text-xs">-- livraisons</p></div><span class="text-2xl">📅</span></div>
+            </div>
+            <div class="bg-white/10 rounded-2xl p-3 border border-white/20">
+                <div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Créneau le plus actif</p><p id="heure-max-d" class="text-xl font-black">--</p><p id="heure-max-detail-d" class="text-white/40 text-xs">-- livraisons</p></div><span class="text-2xl">⏰</span></div>
+            </div>
+            <div class="bg-white/10 rounded-2xl p-3 border border-white/20">
+                <div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Meilleur mois</p><p id="mois-max-d" class="text-xl font-black">--</p><p id="mois-max-detail-d" class="text-white/40 text-xs">-- livraisons</p></div><span class="text-2xl">📈</span></div>
+            </div>
+            <div class="bg-white/10 rounded-2xl p-3 border border-white/20">
+                <div class="flex justify-between"><div><p class="text-white/50 text-xs uppercase">Top Chauffeur</p><p id="top-chauffeur-d" class="text-xl font-black">--</p><p id="top-chauffeur-detail-d" class="text-white/40 text-xs">-- taux moyen</p></div><span class="text-2xl">🏆</span></div>
+            </div>
+        </div>
+        
+        <!-- Charts Grid -->
+        <div class="flex-1 grid grid-cols-2 gap-3 overflow-hidden">
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
+                <h3 class="text-sm font-bold mb-1">📅 Livraisons par jour de la semaine</h3>
+                <p class="text-white/50 text-xs mb-3">Moyenne sur tout l'historique</p>
+                <div class="flex-1 relative"><canvas id="chartJours"></canvas></div>
+            </div>
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
+                <h3 class="text-sm font-bold mb-1">⏰ Livraisons par créneau horaire</h3>
+                <p class="text-white/50 text-xs mb-3">Répartition dans la journée</p>
+                <div class="flex-1 relative"><canvas id="chartHeures"></canvas></div>
+            </div>
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
+                <h3 class="text-sm font-bold mb-1">📈 Évolution mensuelle</h3>
+                <p class="text-white/50 text-xs mb-3">Volume et taux de réussite</p>
+                <div class="flex-1 relative"><canvas id="chartEvolution"></canvas></div>
+            </div>
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
+                <h3 class="text-sm font-bold mb-1">🏆 Top 10 Chauffeurs</h3>
+                <p class="text-white/50 text-xs mb-3">Par nombre total de livraisons</p>
+                <div class="flex-1 relative"><canvas id="chartChauffeurs"></canvas></div>
+            </div>
+        </div>
+    </div>
+
     <div class="mt-2 flex justify-between text-white/30 text-xs">
         <div class="flex gap-3">
             <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>≥95%</span>
@@ -225,6 +270,7 @@
     <div class="flex border-b border-white/10">
         <button id="tab-dashboard-m" onclick="switchTab('dashboard')" class="flex-1 px-4 py-2 text-sm font-semibold tab-active">📊 Dashboard</button>
         <button id="tab-historique-m" onclick="switchTab('historique')" class="flex-1 px-4 py-2 text-sm font-semibold bg-white/5">📈 Historique</button>
+        <button id="tab-tendances-m" onclick="switchTab('tendances')" class="flex-1 px-4 py-2 text-sm font-semibold bg-white/5">📉 Tendances</button>
     </div>
 
     <!-- Content Dashboard Mobile -->
@@ -271,6 +317,51 @@
         </div>
     </div>
 
+    <!-- Content Tendances Mobile -->
+    <div id="content-tendances-m" class="flex-1 flex flex-col overflow-hidden hidden">
+        <div class="px-3 py-3 grid grid-cols-2 gap-2">
+            <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+                <div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Jour chargé</span><span>📅</span></div>
+                <p id="jour-max-m" class="text-lg font-black">--</p>
+                <p id="jour-max-detail-m" class="text-white/40 text-xs">-- livraisons</p>
+            </div>
+            <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+                <div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Créneau actif</span><span>⏰</span></div>
+                <p id="heure-max-m" class="text-lg font-black">--</p>
+                <p id="heure-max-detail-m" class="text-white/40 text-xs">-- livraisons</p>
+            </div>
+            <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+                <div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Meilleur mois</span><span>📈</span></div>
+                <p id="mois-max-m" class="text-lg font-black">--</p>
+                <p id="mois-max-detail-m" class="text-white/40 text-xs">-- livraisons</p>
+            </div>
+            <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+                <div class="flex justify-between mb-1"><span class="text-white/50 text-xs">Top Chauffeur</span><span>🏆</span></div>
+                <p id="top-chauffeur-m" class="text-lg font-black">--</p>
+                <p id="top-chauffeur-detail-m" class="text-white/40 text-xs">-- taux moyen</p>
+            </div>
+        </div>
+        
+        <div class="px-3 pb-4 space-y-3 overflow-y-auto hide-scroll flex-1">
+            <div class="bg-white/5 rounded-xl border border-white/10 p-3">
+                <h3 class="text-sm font-bold mb-2">📅 Par jour de la semaine</h3>
+                <div style="height:180px"><canvas id="chartJoursM"></canvas></div>
+            </div>
+            <div class="bg-white/5 rounded-xl border border-white/10 p-3">
+                <h3 class="text-sm font-bold mb-2">⏰ Par créneau horaire</h3>
+                <div style="height:180px"><canvas id="chartHeuresM"></canvas></div>
+            </div>
+            <div class="bg-white/5 rounded-xl border border-white/10 p-3">
+                <h3 class="text-sm font-bold mb-2">📈 Évolution mensuelle</h3>
+                <div style="height:180px"><canvas id="chartEvolutionM"></canvas></div>
+            </div>
+            <div class="bg-white/5 rounded-xl border border-white/10 p-3">
+                <h3 class="text-sm font-bold mb-2">🏆 Top 10 Chauffeurs</h3>
+                <div style="height:250px"><canvas id="chartChauffeursM"></canvas></div>
+            </div>
+        </div>
+    </div>
+
     <div class="px-4 py-2 text-center text-xs text-white/30 border-t border-white/10">© 2025 LUCEO Group Madagascar</div>
 </div>
 
@@ -295,6 +386,9 @@ let selectedSite = 'all';
 let allData = [];
 let historiqueData = [];
 let historiqueChauffeurData = [];
+let saisieData = [];
+let chartJours, chartHeures, chartEvolution, chartChauffeurs;
+let chartJoursM, chartHeuresM, chartEvolutionM, chartChauffeursM;
 
 // Messages de motivation
 const MSG_TAUX = {
@@ -343,7 +437,7 @@ function clock(){
 
 function switchTab(tab) {
     currentTab = tab;
-    const tabs = ['dashboard', 'historique'];
+    const tabs = ['dashboard', 'historique', 'tendances'];
     tabs.forEach(t => {
         const btnD = document.getElementById(`tab-${t}-d`);
         const btnM = document.getElementById(`tab-${t}-m`);
@@ -361,6 +455,11 @@ function switchTab(tab) {
             contentM?.classList.add('hidden');
         }
     });
+    
+    // Render charts when switching to tendances
+    if (tab === 'tendances') {
+        setTimeout(() => renderTendances(), 100);
+    }
 }
 
 function changeSite(site) {
@@ -740,6 +839,266 @@ function formatMoisLabel(mois) {
     return mois;
 }
 
+// ============================================
+// TENDANCES - GRAPHIQUES
+// ============================================
+const CSV_URL_SAISIE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi8EdCm94kidrAvcKr6kn2ziPIaLVvufAYdBi89lp3vqt6YMJzAoGUFrxcSbsL1Bn7_fT5IHb/pub?gid=0&single=true&output=csv';
+
+function parseSaisie(data) {
+    return data.filter(r => r.Date && r.Heure_Depart).map(r => ({
+        date: r.Date || '',
+        heure: r.Heure_Depart || '',
+        camion: r.Camion || '',
+        chauffeur: r.Chauffeur || '',
+        statut: r.Statut || '',
+        site: r.Site || 'Tana'
+    }));
+}
+
+function renderTendances() {
+    // Analyse par jour de la semaine depuis historiqueChauffeurData
+    const joursLabels = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+    
+    // Calculer livraisons par jour depuis saisieData
+    const joursCounts = [0, 0, 0, 0, 0, 0, 0];
+    
+    if (saisieData.length > 0) {
+        let filteredData = saisieData;
+        if (selectedSite !== 'all') {
+            filteredData = saisieData.filter(d => (d.site || 'Tana') === selectedSite);
+        }
+        
+        filteredData.forEach(d => {
+            if (d.date) {
+                const parts = d.date.split('-');
+                if (parts.length === 3) {
+                    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+                    const jour = date.getDay();
+                    // Réorganiser: Dimanche (0) -> index 6, Lundi (1) -> index 0, etc.
+                    const idx = jour === 0 ? 6 : jour - 1;
+                    joursCounts[idx]++;
+                }
+            }
+        });
+    }
+    
+    // Analyse par heure
+    const heuresLabels = ['06h-08h', '08h-10h', '10h-12h', '12h-14h', '14h-16h', '16h-18h', '18h+'];
+    const heuresCounts = [0, 0, 0, 0, 0, 0, 0];
+    
+    if (saisieData.length > 0) {
+        let filteredData = saisieData;
+        if (selectedSite !== 'all') {
+            filteredData = saisieData.filter(d => (d.site || 'Tana') === selectedSite);
+        }
+        
+        filteredData.forEach(d => {
+            if (d.heure) {
+                const h = parseInt(d.heure.split(':')[0]);
+                if (h >= 6 && h < 8) heuresCounts[0]++;
+                else if (h >= 8 && h < 10) heuresCounts[1]++;
+                else if (h >= 10 && h < 12) heuresCounts[2]++;
+                else if (h >= 12 && h < 14) heuresCounts[3]++;
+                else if (h >= 14 && h < 16) heuresCounts[4]++;
+                else if (h >= 16 && h < 18) heuresCounts[5]++;
+                else if (h >= 18) heuresCounts[6]++;
+            }
+        });
+    }
+    
+    // Évolution mensuelle depuis historiqueData
+    let histData = historiqueData;
+    if (selectedSite !== 'all') {
+        histData = historiqueData.filter(d => d.site === selectedSite);
+    }
+    
+    const moisLabels = histData.map(d => {
+        const parts = d.mois.split('-');
+        return parts.length === 2 ? parts[1] + '/' + parts[0].slice(2) : d.mois;
+    });
+    const moisTotaux = histData.map(d => d.tot);
+    const moisTaux = histData.map(d => d.tx);
+    
+    // Top chauffeurs depuis historiqueChauffeurData
+    let chaufData = historiqueChauffeurData;
+    if (selectedSite !== 'all') {
+        chaufData = historiqueChauffeurData.filter(d => d.site === selectedSite);
+    }
+    
+    const chauffeurStats = {};
+    chaufData.forEach(d => {
+        if (!chauffeurStats[d.chf]) {
+            chauffeurStats[d.chf] = { tot: 0, txSum: 0, count: 0 };
+        }
+        chauffeurStats[d.chf].tot += d.tot;
+        chauffeurStats[d.chf].txSum += d.tx;
+        chauffeurStats[d.chf].count++;
+    });
+    
+    const topChauffeurs = Object.entries(chauffeurStats)
+        .map(([nom, data]) => ({
+            nom,
+            tot: data.tot,
+            tx: data.txSum / data.count
+        }))
+        .sort((a, b) => b.tot - a.tot)
+        .slice(0, 10);
+    
+    // Mise à jour des résumés Desktop
+    const maxJourIdx = joursCounts.indexOf(Math.max(...joursCounts));
+    document.getElementById('jour-max-d').textContent = joursLabels[maxJourIdx] || '--';
+    document.getElementById('jour-max-detail-d').textContent = fmt(joursCounts[maxJourIdx] || 0) + ' livraisons';
+    
+    const maxHeureIdx = heuresCounts.indexOf(Math.max(...heuresCounts));
+    document.getElementById('heure-max-d').textContent = heuresLabels[maxHeureIdx] || '--';
+    document.getElementById('heure-max-detail-d').textContent = fmt(heuresCounts[maxHeureIdx] || 0) + ' livraisons';
+    
+    if (histData.length > 0) {
+        const maxMoisIdx = moisTotaux.indexOf(Math.max(...moisTotaux));
+        document.getElementById('mois-max-d').textContent = formatMoisLabel(histData[maxMoisIdx]?.mois || '--');
+        document.getElementById('mois-max-detail-d').textContent = fmt(moisTotaux[maxMoisIdx] || 0) + ' livraisons';
+    }
+    
+    if (topChauffeurs.length > 0) {
+        document.getElementById('top-chauffeur-d').textContent = topChauffeurs[0].nom;
+        document.getElementById('top-chauffeur-detail-d').textContent = topChauffeurs[0].tx.toFixed(1) + '% taux moyen';
+    }
+    
+    // Mise à jour des résumés Mobile
+    document.getElementById('jour-max-m').textContent = joursLabels[maxJourIdx] || '--';
+    document.getElementById('jour-max-detail-m').textContent = fmt(joursCounts[maxJourIdx] || 0) + ' livr.';
+    document.getElementById('heure-max-m').textContent = heuresLabels[maxHeureIdx] || '--';
+    document.getElementById('heure-max-detail-m').textContent = fmt(heuresCounts[maxHeureIdx] || 0) + ' livr.';
+    
+    if (histData.length > 0) {
+        const maxMoisIdx = moisTotaux.indexOf(Math.max(...moisTotaux));
+        const parts = (histData[maxMoisIdx]?.mois || '').split('-');
+        const shortMonth = parts.length === 2 ? parts[1] + '/' + parts[0].slice(2) : '--';
+        document.getElementById('mois-max-m').textContent = shortMonth;
+        document.getElementById('mois-max-detail-m').textContent = fmt(moisTotaux[maxMoisIdx] || 0) + ' livr.';
+    }
+    
+    if (topChauffeurs.length > 0) {
+        document.getElementById('top-chauffeur-m').textContent = topChauffeurs[0].nom.split(' ')[0];
+        document.getElementById('top-chauffeur-detail-m').textContent = topChauffeurs[0].tx.toFixed(0) + '%';
+    }
+    
+    // Chart options
+    const chartColors = {
+        blue: 'rgba(59, 130, 246, 0.8)',
+        green: 'rgba(16, 185, 129, 0.8)',
+        yellow: 'rgba(245, 158, 11, 0.8)',
+        purple: 'rgba(139, 92, 246, 0.8)',
+        cyan: 'rgba(6, 182, 212, 0.8)',
+        red: 'rgba(239, 68, 68, 0.8)',
+        pink: 'rgba(236, 72, 153, 0.8)'
+    };
+    
+    const baseOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'rgba(255,255,255,0.5)' } },
+            x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.5)' } }
+        }
+    };
+    
+    // Destroy existing charts
+    if (chartJours) chartJours.destroy();
+    if (chartHeures) chartHeures.destroy();
+    if (chartEvolution) chartEvolution.destroy();
+    if (chartChauffeurs) chartChauffeurs.destroy();
+    if (chartJoursM) chartJoursM.destroy();
+    if (chartHeuresM) chartHeuresM.destroy();
+    if (chartEvolutionM) chartEvolutionM.destroy();
+    if (chartChauffeursM) chartChauffeursM.destroy();
+    
+    // Chart Jours Desktop
+    const ctxJours = document.getElementById('chartJours')?.getContext('2d');
+    if (ctxJours) {
+        chartJours = new Chart(ctxJours, {
+            type: 'bar',
+            data: {
+                labels: joursLabels,
+                datasets: [{ data: joursCounts, backgroundColor: [chartColors.blue, chartColors.green, chartColors.purple, chartColors.yellow, chartColors.red, chartColors.cyan, chartColors.pink], borderRadius: 6 }]
+            },
+            options: baseOptions
+        });
+    }
+    
+    // Chart Heures Desktop
+    const ctxHeures = document.getElementById('chartHeures')?.getContext('2d');
+    if (ctxHeures) {
+        chartHeures = new Chart(ctxHeures, {
+            type: 'bar',
+            data: {
+                labels: heuresLabels,
+                datasets: [{ data: heuresCounts, backgroundColor: chartColors.purple, borderRadius: 6 }]
+            },
+            options: baseOptions
+        });
+    }
+    
+    // Chart Evolution Desktop
+    const ctxEvolution = document.getElementById('chartEvolution')?.getContext('2d');
+    if (ctxEvolution) {
+        chartEvolution = new Chart(ctxEvolution, {
+            type: 'line',
+            data: {
+                labels: moisLabels,
+                datasets: [
+                    { label: 'Livraisons', data: moisTotaux, borderColor: chartColors.green, backgroundColor: 'rgba(16, 185, 129, 0.2)', fill: true, tension: 0.4, yAxisID: 'y' },
+                    { label: 'Taux (%)', data: moisTaux, borderColor: chartColors.yellow, backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.4, yAxisID: 'y1' }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: true, position: 'top', labels: { color: 'rgba(255,255,255,0.7)' } } },
+                scales: {
+                    y: { type: 'linear', position: 'left', beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'rgba(255,255,255,0.5)' } },
+                    y1: { type: 'linear', position: 'right', min: 80, max: 100, grid: { display: false }, ticks: { color: chartColors.yellow } },
+                    x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.5)' } }
+                }
+            }
+        });
+    }
+    
+    // Chart Chauffeurs Desktop
+    const ctxChauffeurs = document.getElementById('chartChauffeurs')?.getContext('2d');
+    if (ctxChauffeurs) {
+        chartChauffeurs = new Chart(ctxChauffeurs, {
+            type: 'bar',
+            data: {
+                labels: topChauffeurs.map(c => c.nom),
+                datasets: [{ data: topChauffeurs.map(c => c.tot), backgroundColor: topChauffeurs.map((c, i) => i === 0 ? '#ffd700' : i === 1 ? '#c0c0c0' : i === 2 ? '#cd7f32' : chartColors.blue), borderRadius: 6 }]
+            },
+            options: { ...baseOptions, indexAxis: 'y', scales: { x: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'rgba(255,255,255,0.5)' } }, y: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.5)' } } } }
+        });
+    }
+    
+    // Mobile Charts
+    const ctxJoursM = document.getElementById('chartJoursM')?.getContext('2d');
+    if (ctxJoursM) {
+        chartJoursM = new Chart(ctxJoursM, { type: 'bar', data: { labels: joursLabels.map(j => j.slice(0, 3)), datasets: [{ data: joursCounts, backgroundColor: [chartColors.blue, chartColors.green, chartColors.purple, chartColors.yellow, chartColors.red, chartColors.cyan, chartColors.pink], borderRadius: 4 }] }, options: baseOptions });
+    }
+    
+    const ctxHeuresM = document.getElementById('chartHeuresM')?.getContext('2d');
+    if (ctxHeuresM) {
+        chartHeuresM = new Chart(ctxHeuresM, { type: 'bar', data: { labels: heuresLabels, datasets: [{ data: heuresCounts, backgroundColor: chartColors.purple, borderRadius: 4 }] }, options: baseOptions });
+    }
+    
+    const ctxEvolutionM = document.getElementById('chartEvolutionM')?.getContext('2d');
+    if (ctxEvolutionM) {
+        chartEvolutionM = new Chart(ctxEvolutionM, { type: 'line', data: { labels: moisLabels, datasets: [{ data: moisTotaux, borderColor: chartColors.green, backgroundColor: 'rgba(16, 185, 129, 0.2)', fill: true, tension: 0.4 }] }, options: baseOptions });
+    }
+    
+    const ctxChauffeursM = document.getElementById('chartChauffeursM')?.getContext('2d');
+    if (ctxChauffeursM) {
+        chartChauffeursM = new Chart(ctxChauffeursM, { type: 'bar', data: { labels: topChauffeurs.map(c => c.nom.split(' ')[0]), datasets: [{ data: topChauffeurs.map(c => c.tot), backgroundColor: topChauffeurs.map((c, i) => i === 0 ? '#ffd700' : i === 1 ? '#c0c0c0' : i === 2 ? '#cd7f32' : chartColors.blue), borderRadius: 4 }] }, options: { ...baseOptions, indexAxis: 'y' } });
+    }
+}
+
 async function loadData() {
     const ri = document.getElementById('ref');
     if (ri) ri.classList.add('spin');
@@ -777,6 +1136,17 @@ async function loadData() {
             historiqueData = parseHistorique(p.data);
         } catch (e) {
             console.error('Erreur historique:', e);
+        }
+    }
+    
+    if (CSV_URL_SAISIE && CSV_URL_SAISIE.trim() !== '') {
+        try {
+            const r = await fetch(CSV_URL_SAISIE + '&_t=' + timestamp);
+            const t = await r.text();
+            const p = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().replace(/\s+/g,'_') });
+            saisieData = parseSaisie(p.data);
+        } catch (e) {
+            console.error('Erreur saisie:', e);
         }
     }
     

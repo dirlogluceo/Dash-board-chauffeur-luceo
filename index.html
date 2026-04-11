@@ -846,7 +846,7 @@ const CSV_URL_SAISIE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpev6yi
 
 function parseSaisie(data) {
     return data.filter(r => r.Date && (r.Heure_Depart || r.Heure_Arrivee)).map(r => ({
-        date: r.Mois || r.Date || '',  // Utilise Mois (format YYYY-MM) ou Date
+        date: r.Date || '',  // Utilise Date (format DD/MM/YYYY)
         heure: r.Heure_Depart || r.Heure_Arrivee || '',
         camion: r.Camion || '',
         chauffeur: r.Chauffeur || '',

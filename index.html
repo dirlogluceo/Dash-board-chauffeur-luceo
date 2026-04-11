@@ -1014,8 +1014,6 @@ function renderTendances() {
         chauffeurStats[d.chf].txSum += d.tx;
         chauffeurStats[d.chf].count++;
     });
-        chauffeurStats[d.chf].count++;
-    });
     
     const topChauffeurs = Object.entries(chauffeurStats)
         .map(([nom, data]) => ({

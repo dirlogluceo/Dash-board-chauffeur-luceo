@@ -197,7 +197,7 @@
         <div class="flex-1 grid grid-cols-2 gap-3 overflow-hidden">
             <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
                 <h3 class="text-sm font-bold mb-1">📅 Livraisons par jour de la semaine</h3>
-                <p class="text-white/50 text-xs mb-3">Moyenne sur tout l'historique</p>
+                <p class="text-white/50 text-xs mb-3">Moyenne de livraisons par jour</p>
                 <div class="flex-1 relative"><canvas id="chartJours"></canvas></div>
             </div>
             <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
@@ -476,6 +476,11 @@ function changeSite(site) {
     
     // Re-render avec le filtre
     applyFiltersAndRender();
+    
+    // Re-render tendances si on est sur cet onglet
+    if (currentTab === 'tendances') {
+        setTimeout(() => renderTendances(), 100);
+    }
 }
 
 function updateSiteIndicator() {
@@ -511,6 +516,11 @@ function changeMonth(month) {
     document.getElementById('month-select-d').value = month;
     document.getElementById('month-select-m').value = month;
     applyFiltersAndRender();
+    
+    // Re-render tendances si on est sur cet onglet
+    if (currentTab === 'tendances') {
+        setTimeout(() => renderTendances(), 100);
+    }
 }
 
 function filterBySite(data) {
@@ -856,16 +866,37 @@ function parseSaisie(data) {
 }
 
 function renderTendances() {
-    // Analyse par jour de la semaine depuis historiqueChauffeurData
+    // Analyse par jour de la semaine
     const joursLabels = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
     
-    // Calculer livraisons par jour depuis saisieData
+    // Calculer livraisons par jour depuis saisieData avec filtres
     const joursCounts = [0, 0, 0, 0, 0, 0, 0];
+    const joursOccurrences = [0, 0, 0, 0, 0, 0, 0]; // Pour calculer la moyenne
+    const datesVues = new Set(); // Pour compter les jours uniques
     
     if (saisieData.length > 0) {
         let filteredData = saisieData;
+        
+        // Filtre par site
         if (selectedSite !== 'all') {
-            filteredData = saisieData.filter(d => (d.site || 'Tana') === selectedSite);
+            filteredData = filteredData.filter(d => (d.site || 'Tana') === selectedSite);
+        }
+        
+        // Filtre par mois si pas "current"
+        if (selectedMonth !== 'current') {
+            filteredData = filteredData.filter(d => {
+                if (d.date) {
+                    const dateStr = String(d.date).trim();
+                    if (dateStr.includes('/')) {
+                        const parts = dateStr.split('/');
+                        if (parts.length === 3) {
+                            const mois = parts[2] + '-' + parts[1].padStart(2, '0');
+                            return mois === selectedMonth;
+                        }
+                    }
+                }
+                return false;
+            });
         }
         
         filteredData.forEach(d => {
@@ -890,22 +921,52 @@ function renderTendances() {
                 
                 if (date && !isNaN(date.getTime())) {
                     const jour = date.getDay();
-                    // Réorganiser: Dimanche (0) -> index 6, Lundi (1) -> index 0, etc.
                     const idx = jour === 0 ? 6 : jour - 1;
                     joursCounts[idx]++;
+                    
+                    // Compter les jours uniques pour la moyenne
+                    const dateKey = dateStr + '-' + idx;
+                    if (!datesVues.has(dateKey)) {
+                        datesVues.add(dateKey);
+                        joursOccurrences[idx]++;
+                    }
                 }
             }
         });
     }
     
-    // Analyse par heure
+    // Calculer les moyennes par jour
+    const joursMoyennes = joursLabels.map((_, idx) => {
+        return joursOccurrences[idx] > 0 ? Math.round(joursCounts[idx] / joursOccurrences[idx]) : 0;
+    });
+    
+    // Analyse par heure avec filtres
     const heuresLabels = ['06h-08h', '08h-10h', '10h-12h', '12h-14h', '14h-16h', '16h-18h', '18h+'];
     const heuresCounts = [0, 0, 0, 0, 0, 0, 0];
     
     if (saisieData.length > 0) {
         let filteredData = saisieData;
+        
+        // Filtre par site
         if (selectedSite !== 'all') {
-            filteredData = saisieData.filter(d => (d.site || 'Tana') === selectedSite);
+            filteredData = filteredData.filter(d => (d.site || 'Tana') === selectedSite);
+        }
+        
+        // Filtre par mois si pas "current"
+        if (selectedMonth !== 'current') {
+            filteredData = filteredData.filter(d => {
+                if (d.date) {
+                    const dateStr = String(d.date).trim();
+                    if (dateStr.includes('/')) {
+                        const parts = dateStr.split('/');
+                        if (parts.length === 3) {
+                            const mois = parts[2] + '-' + parts[1].padStart(2, '0');
+                            return mois === selectedMonth;
+                        }
+                    }
+                }
+                return false;
+            });
         }
         
         filteredData.forEach(d => {
@@ -922,10 +983,10 @@ function renderTendances() {
         });
     }
     
-    // Évolution mensuelle depuis historiqueData
-    let histData = historiqueData;
+    // Évolution mensuelle depuis historiqueData avec filtre site
+    let histData = [...historiqueData];
     if (selectedSite !== 'all') {
-        histData = historiqueData.filter(d => d.site === selectedSite);
+        histData = histData.filter(d => d.site === selectedSite);
     }
     
     const moisLabels = histData.map(d => {
@@ -935,10 +996,13 @@ function renderTendances() {
     const moisTotaux = histData.map(d => d.tot);
     const moisTaux = histData.map(d => d.tx);
     
-    // Top chauffeurs depuis historiqueChauffeurData
-    let chaufData = historiqueChauffeurData;
+    // Top chauffeurs depuis historiqueChauffeurData avec filtres
+    let chaufData = [...historiqueChauffeurData];
     if (selectedSite !== 'all') {
-        chaufData = historiqueChauffeurData.filter(d => d.site === selectedSite);
+        chaufData = chaufData.filter(d => d.site === selectedSite);
+    }
+    if (selectedMonth !== 'current') {
+        chaufData = chaufData.filter(d => d.mois === selectedMonth);
     }
     
     const chauffeurStats = {};
@@ -948,6 +1012,8 @@ function renderTendances() {
         }
         chauffeurStats[d.chf].tot += d.tot;
         chauffeurStats[d.chf].txSum += d.tx;
+        chauffeurStats[d.chf].count++;
+    });
         chauffeurStats[d.chf].count++;
     });
     
@@ -961,9 +1027,9 @@ function renderTendances() {
         .slice(0, 10);
     
     // Mise à jour des résumés Desktop
-    const maxJourIdx = joursCounts.indexOf(Math.max(...joursCounts));
+    const maxJourIdx = joursMoyennes.indexOf(Math.max(...joursMoyennes));
     document.getElementById('jour-max-d').textContent = joursLabels[maxJourIdx] || '--';
-    document.getElementById('jour-max-detail-d').textContent = fmt(joursCounts[maxJourIdx] || 0) + ' livraisons';
+    document.getElementById('jour-max-detail-d').textContent = fmt(joursMoyennes[maxJourIdx] || 0) + ' livr./jour';
     
     const maxHeureIdx = heuresCounts.indexOf(Math.max(...heuresCounts));
     document.getElementById('heure-max-d').textContent = heuresLabels[maxHeureIdx] || '--';
@@ -982,7 +1048,7 @@ function renderTendances() {
     
     // Mise à jour des résumés Mobile
     document.getElementById('jour-max-m').textContent = joursLabels[maxJourIdx] || '--';
-    document.getElementById('jour-max-detail-m').textContent = fmt(joursCounts[maxJourIdx] || 0) + ' livr.';
+    document.getElementById('jour-max-detail-m').textContent = fmt(joursMoyennes[maxJourIdx] || 0) + ' moy/j';
     document.getElementById('heure-max-m').textContent = heuresLabels[maxHeureIdx] || '--';
     document.getElementById('heure-max-detail-m').textContent = fmt(heuresCounts[maxHeureIdx] || 0) + ' livr.';
     
@@ -1030,14 +1096,14 @@ function renderTendances() {
     if (chartEvolutionM) chartEvolutionM.destroy();
     if (chartChauffeursM) chartChauffeursM.destroy();
     
-    // Chart Jours Desktop
+    // Chart Jours Desktop (moyenne par jour)
     const ctxJours = document.getElementById('chartJours')?.getContext('2d');
     if (ctxJours) {
         chartJours = new Chart(ctxJours, {
             type: 'bar',
             data: {
                 labels: joursLabels,
-                datasets: [{ data: joursCounts, backgroundColor: [chartColors.blue, chartColors.green, chartColors.purple, chartColors.yellow, chartColors.red, chartColors.cyan, chartColors.pink], borderRadius: 6 }]
+                datasets: [{ data: joursMoyennes, backgroundColor: [chartColors.blue, chartColors.green, chartColors.purple, chartColors.yellow, chartColors.red, chartColors.cyan, chartColors.pink], borderRadius: 6 }]
             },
             options: baseOptions
         });
@@ -1096,7 +1162,7 @@ function renderTendances() {
     // Mobile Charts
     const ctxJoursM = document.getElementById('chartJoursM')?.getContext('2d');
     if (ctxJoursM) {
-        chartJoursM = new Chart(ctxJoursM, { type: 'bar', data: { labels: joursLabels.map(j => j.slice(0, 3)), datasets: [{ data: joursCounts, backgroundColor: [chartColors.blue, chartColors.green, chartColors.purple, chartColors.yellow, chartColors.red, chartColors.cyan, chartColors.pink], borderRadius: 4 }] }, options: baseOptions });
+        chartJoursM = new Chart(ctxJoursM, { type: 'bar', data: { labels: joursLabels.map(j => j.slice(0, 3)), datasets: [{ data: joursMoyennes, backgroundColor: [chartColors.blue, chartColors.green, chartColors.purple, chartColors.yellow, chartColors.red, chartColors.cyan, chartColors.pink], borderRadius: 4 }] }, options: baseOptions });
     }
     
     const ctxHeuresM = document.getElementById('chartHeuresM')?.getContext('2d');

@@ -870,9 +870,25 @@ function renderTendances() {
         
         filteredData.forEach(d => {
             if (d.date) {
-                const parts = d.date.split('-');
-                if (parts.length === 3) {
-                    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+                let date = null;
+                const dateStr = String(d.date).trim();
+                
+                // Format DD/MM/YYYY
+                if (dateStr.includes('/')) {
+                    const parts = dateStr.split('/');
+                    if (parts.length === 3) {
+                        date = new Date(parts[2], parts[1] - 1, parts[0]);
+                    }
+                }
+                // Format YYYY-MM-DD
+                else if (dateStr.includes('-') && dateStr.length === 10) {
+                    const parts = dateStr.split('-');
+                    if (parts.length === 3 && parts[0].length === 4) {
+                        date = new Date(parts[0], parts[1] - 1, parts[2]);
+                    }
+                }
+                
+                if (date && !isNaN(date.getTime())) {
                     const jour = date.getDay();
                     // Réorganiser: Dimanche (0) -> index 6, Lundi (1) -> index 0, etc.
                     const idx = jour === 0 ? 6 : jour - 1;

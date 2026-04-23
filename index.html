@@ -193,60 +193,56 @@
             </div>
         </div>
         
-        <!-- Charts Grid -->
-        <div class="flex-1 grid grid-cols-3 gap-3 overflow-hidden">
-            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
+        <!-- Charts Grid - avec scroll -->
+        <div class="flex-1 grid grid-cols-3 gap-3 overflow-y-auto hide-scroll pb-2">
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col min-h-[220px]">
                 <h3 class="text-sm font-bold mb-1">📅 Livraisons par jour de la semaine</h3>
-                <p class="text-white/50 text-xs mb-3">Moyenne de livraisons par jour</p>
+                <p class="text-white/50 text-xs mb-2">Moyenne de livraisons par jour</p>
                 <div class="flex-1 relative"><canvas id="chartJours"></canvas></div>
             </div>
-            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col min-h-[220px]">
                 <h3 class="text-sm font-bold mb-1">⏰ Livraisons par créneau horaire</h3>
-                <p class="text-white/50 text-xs mb-3">Répartition dans la journée</p>
+                <p class="text-white/50 text-xs mb-2">Répartition dans la journée</p>
                 <div class="flex-1 relative"><canvas id="chartHeures"></canvas></div>
             </div>
-            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col min-h-[220px]">
                 <h3 class="text-sm font-bold mb-1">🏪 Répartition par Enseigne</h3>
-                <p class="text-white/50 text-xs mb-3">Pour facturation</p>
-                <div class="flex-1 relative"><canvas id="chartEnseignes"></canvas></div>
-            </div>
-            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
-                <h3 class="text-sm font-bold mb-1">📈 Évolution mensuelle</h3>
-                <p class="text-white/50 text-xs mb-3">Volume et taux de réussite</p>
-                <div class="flex-1 relative"><canvas id="chartEvolution"></canvas></div>
-            </div>
-            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
-                <h3 class="text-sm font-bold mb-1">🏆 Top 10 Chauffeurs</h3>
-                <p class="text-white/50 text-xs mb-3">Par nombre total de livraisons</p>
-                <div class="flex-1 relative"><canvas id="chartChauffeurs"></canvas></div>
-            </div>
-            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
-                <h3 class="text-sm font-bold mb-1">📊 Détail par Enseigne</h3>
-                <p class="text-white/50 text-xs mb-3">Nombre de livraisons</p>
-                <div class="flex-1 flex flex-col justify-center" id="enseigneDetails">
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-center p-2 bg-white/5 rounded-lg">
+                <p class="text-white/50 text-xs mb-2">Pour facturation</p>
+                <div class="flex-1 flex gap-3">
+                    <div class="w-1/2 relative"><canvas id="chartEnseignes"></canvas></div>
+                    <div class="w-1/2 flex flex-col justify-center space-y-1.5 text-sm">
+                        <div class="flex justify-between items-center p-1.5 bg-white/5 rounded">
                             <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span>ABC</span>
                             <span id="count-abc" class="font-bold">0</span>
                         </div>
-                        <div class="flex justify-between items-center p-2 bg-white/5 rounded-lg">
+                        <div class="flex justify-between items-center p-1.5 bg-white/5 rounded">
                             <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-orange-500"></span>BUT</span>
                             <span id="count-but" class="font-bold">0</span>
                         </div>
-                        <div class="flex justify-between items-center p-2 bg-white/5 rounded-lg">
+                        <div class="flex justify-between items-center p-1.5 bg-white/5 rounded">
                             <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span>Proma</span>
                             <span id="count-proma" class="font-bold">0</span>
                         </div>
-                        <div class="flex justify-between items-center p-2 bg-white/5 rounded-lg">
-                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span>Hotel Plus</span>
+                        <div class="flex justify-between items-center p-1.5 bg-white/5 rounded">
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span>Hotel+</span>
                             <span id="count-hp" class="font-bold">0</span>
                         </div>
-                        <div class="flex justify-between items-center p-2 bg-white/10 rounded-lg border border-white/20 mt-2">
+                        <div class="flex justify-between items-center p-1.5 bg-white/10 rounded border border-white/20">
                             <span class="font-bold">TOTAL</span>
                             <span id="count-total" class="font-black text-emerald-400">0</span>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col min-h-[220px]">
+                <h3 class="text-sm font-bold mb-1">📈 Évolution mensuelle</h3>
+                <p class="text-white/50 text-xs mb-2">Volume et taux de réussite</p>
+                <div class="flex-1 relative"><canvas id="chartEvolution"></canvas></div>
+            </div>
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col min-h-[220px] col-span-2">
+                <h3 class="text-sm font-bold mb-1">🏆 Top 10 Chauffeurs</h3>
+                <p class="text-white/50 text-xs mb-2">Par nombre total de livraisons</p>
+                <div class="flex-1 relative"><canvas id="chartChauffeurs"></canvas></div>
             </div>
         </div>
     </div>
@@ -1257,11 +1253,7 @@ function renderTendances() {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        display: true,
-                        position: 'bottom',
-                        labels: { color: 'rgba(255,255,255,0.7)', padding: 10, font: { size: 11 } }
-                    },
+                    legend: { display: false },
                     tooltip: {
                         callbacks: {
                             label: function(context) {

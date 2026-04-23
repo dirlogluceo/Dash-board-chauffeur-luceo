@@ -194,7 +194,7 @@
         </div>
         
         <!-- Charts Grid -->
-        <div class="flex-1 grid grid-cols-2 gap-3 overflow-hidden">
+        <div class="flex-1 grid grid-cols-3 gap-3 overflow-hidden">
             <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
                 <h3 class="text-sm font-bold mb-1">📅 Livraisons par jour de la semaine</h3>
                 <p class="text-white/50 text-xs mb-3">Moyenne de livraisons par jour</p>
@@ -206,6 +206,11 @@
                 <div class="flex-1 relative"><canvas id="chartHeures"></canvas></div>
             </div>
             <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
+                <h3 class="text-sm font-bold mb-1">🏪 Répartition par Enseigne</h3>
+                <p class="text-white/50 text-xs mb-3">Pour facturation</p>
+                <div class="flex-1 relative"><canvas id="chartEnseignes"></canvas></div>
+            </div>
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
                 <h3 class="text-sm font-bold mb-1">📈 Évolution mensuelle</h3>
                 <p class="text-white/50 text-xs mb-3">Volume et taux de réussite</p>
                 <div class="flex-1 relative"><canvas id="chartEvolution"></canvas></div>
@@ -214,6 +219,34 @@
                 <h3 class="text-sm font-bold mb-1">🏆 Top 10 Chauffeurs</h3>
                 <p class="text-white/50 text-xs mb-3">Par nombre total de livraisons</p>
                 <div class="flex-1 relative"><canvas id="chartChauffeurs"></canvas></div>
+            </div>
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col">
+                <h3 class="text-sm font-bold mb-1">📊 Détail par Enseigne</h3>
+                <p class="text-white/50 text-xs mb-3">Nombre de livraisons</p>
+                <div class="flex-1 flex flex-col justify-center" id="enseigneDetails">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center p-2 bg-white/5 rounded-lg">
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span>ABC</span>
+                            <span id="count-abc" class="font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-white/5 rounded-lg">
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-orange-500"></span>BUT</span>
+                            <span id="count-but" class="font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-white/5 rounded-lg">
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span>Proma</span>
+                            <span id="count-proma" class="font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-white/5 rounded-lg">
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span>Hotel Plus</span>
+                            <span id="count-hp" class="font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-white/10 rounded-lg border border-white/20 mt-2">
+                            <span class="font-bold">TOTAL</span>
+                            <span id="count-total" class="font-black text-emerald-400">0</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -344,6 +377,34 @@
         
         <div class="px-3 pb-4 space-y-3 overflow-y-auto hide-scroll flex-1">
             <div class="bg-white/5 rounded-xl border border-white/10 p-3">
+                <h3 class="text-sm font-bold mb-2">🏪 Répartition par Enseigne</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <div style="height:150px"><canvas id="chartEnseignesM"></canvas></div>
+                    <div class="space-y-1 text-xs flex flex-col justify-center">
+                        <div class="flex justify-between items-center p-1.5 bg-white/5 rounded">
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-500"></span>ABC</span>
+                            <span id="count-abc-m" class="font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-1.5 bg-white/5 rounded">
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-orange-500"></span>BUT</span>
+                            <span id="count-but-m" class="font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-1.5 bg-white/5 rounded">
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500"></span>Proma</span>
+                            <span id="count-proma-m" class="font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-1.5 bg-white/5 rounded">
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-purple-500"></span>HP</span>
+                            <span id="count-hp-m" class="font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-1.5 bg-white/10 rounded border border-white/20">
+                            <span class="font-bold">Total</span>
+                            <span id="count-total-m" class="font-black text-emerald-400">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white/5 rounded-xl border border-white/10 p-3">
                 <h3 class="text-sm font-bold mb-2">📅 Par jour de la semaine</h3>
                 <div style="height:180px"><canvas id="chartJoursM"></canvas></div>
             </div>
@@ -387,8 +448,8 @@ let allData = [];
 let historiqueData = [];
 let historiqueChauffeurData = [];
 let saisieData = [];
-let chartJours, chartHeures, chartEvolution, chartChauffeurs;
-let chartJoursM, chartHeuresM, chartEvolutionM, chartChauffeursM;
+let chartJours, chartHeures, chartEvolution, chartChauffeurs, chartEnseignes;
+let chartJoursM, chartHeuresM, chartEvolutionM, chartChauffeursM, chartEnseignesM;
 
 // Messages de motivation
 const MSG_TAUX = {
@@ -861,7 +922,8 @@ function parseSaisie(data) {
         camion: r.Camion || '',
         chauffeur: r.Chauffeur || '',
         statut: r.Statut || '',
-        site: r.Site || 'Tana'
+        site: r.Site || 'Tana',
+        commande: r.N_Commande || ''
     }));
 }
 
@@ -983,6 +1045,47 @@ function renderTendances() {
         });
     }
     
+    // Analyse par enseigne avec filtres
+    const enseignesCounts = { ABC: 0, BUT: 0, Proma: 0, HP: 0 };
+    
+    if (saisieData.length > 0) {
+        let filteredData = saisieData;
+        
+        // Filtre par site
+        if (selectedSite !== 'all') {
+            filteredData = filteredData.filter(d => (d.site || 'Tana') === selectedSite);
+        }
+        
+        // Filtre par mois si pas "current"
+        if (selectedMonth !== 'current') {
+            filteredData = filteredData.filter(d => {
+                if (d.date) {
+                    const dateStr = String(d.date).trim();
+                    if (dateStr.includes('/')) {
+                        const parts = dateStr.split('/');
+                        if (parts.length === 3) {
+                            const mois = parts[2] + '-' + parts[1].padStart(2, '0');
+                            return mois === selectedMonth;
+                        }
+                    }
+                }
+                return false;
+            });
+        }
+        
+        filteredData.forEach(d => {
+            if (d.commande) {
+                const cmd = String(d.commande).toUpperCase();
+                if (cmd.startsWith('ABC')) enseignesCounts.ABC++;
+                else if (cmd.startsWith('IDC')) enseignesCounts.BUT++;
+                else if (cmd.startsWith('PDVA')) enseignesCounts.Proma++;
+                else if (cmd.startsWith('HP')) enseignesCounts.HP++;
+            }
+        });
+    }
+    
+    const enseignesTotal = enseignesCounts.ABC + enseignesCounts.BUT + enseignesCounts.Proma + enseignesCounts.HP;
+    
     // Évolution mensuelle depuis historiqueData avec filtre site
     let histData = [...historiqueData];
     if (selectedSite !== 'all') {
@@ -1063,6 +1166,20 @@ function renderTendances() {
         document.getElementById('top-chauffeur-detail-m').textContent = topChauffeurs[0].tx.toFixed(0) + '%';
     }
     
+    // Mise à jour des compteurs enseignes Desktop
+    document.getElementById('count-abc').textContent = fmt(enseignesCounts.ABC);
+    document.getElementById('count-but').textContent = fmt(enseignesCounts.BUT);
+    document.getElementById('count-proma').textContent = fmt(enseignesCounts.Proma);
+    document.getElementById('count-hp').textContent = fmt(enseignesCounts.HP);
+    document.getElementById('count-total').textContent = fmt(enseignesTotal);
+    
+    // Mise à jour des compteurs enseignes Mobile
+    document.getElementById('count-abc-m').textContent = fmt(enseignesCounts.ABC);
+    document.getElementById('count-but-m').textContent = fmt(enseignesCounts.BUT);
+    document.getElementById('count-proma-m').textContent = fmt(enseignesCounts.Proma);
+    document.getElementById('count-hp-m').textContent = fmt(enseignesCounts.HP);
+    document.getElementById('count-total-m').textContent = fmt(enseignesTotal);
+    
     // Chart options
     const chartColors = {
         blue: 'rgba(59, 130, 246, 0.8)',
@@ -1089,10 +1206,12 @@ function renderTendances() {
     if (chartHeures) chartHeures.destroy();
     if (chartEvolution) chartEvolution.destroy();
     if (chartChauffeurs) chartChauffeurs.destroy();
+    if (chartEnseignes) chartEnseignes.destroy();
     if (chartJoursM) chartJoursM.destroy();
     if (chartHeuresM) chartHeuresM.destroy();
     if (chartEvolutionM) chartEvolutionM.destroy();
     if (chartChauffeursM) chartChauffeursM.destroy();
+    if (chartEnseignesM) chartEnseignesM.destroy();
     
     // Chart Jours Desktop (moyenne par jour)
     const ctxJours = document.getElementById('chartJours')?.getContext('2d');
@@ -1117,6 +1236,44 @@ function renderTendances() {
                 datasets: [{ data: heuresCounts, backgroundColor: chartColors.purple, borderRadius: 6 }]
             },
             options: baseOptions
+        });
+    }
+    
+    // Chart Enseignes Desktop (Camembert)
+    const ctxEnseignes = document.getElementById('chartEnseignes')?.getContext('2d');
+    if (ctxEnseignes) {
+        chartEnseignes = new Chart(ctxEnseignes, {
+            type: 'doughnut',
+            data: {
+                labels: ['ABC', 'BUT', 'Proma', 'Hotel Plus'],
+                datasets: [{
+                    data: [enseignesCounts.ABC, enseignesCounts.BUT, enseignesCounts.Proma, enseignesCounts.HP],
+                    backgroundColor: ['rgba(59, 130, 246, 0.8)', 'rgba(249, 115, 22, 0.8)', 'rgba(16, 185, 129, 0.8)', 'rgba(139, 92, 246, 0.8)'],
+                    borderColor: ['rgba(59, 130, 246, 1)', 'rgba(249, 115, 22, 1)', 'rgba(16, 185, 129, 1)', 'rgba(139, 92, 246, 1)'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: { color: 'rgba(255,255,255,0.7)', padding: 10, font: { size: 11 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const value = context.raw;
+                                const pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return `${context.label}: ${value} (${pct}%)`;
+                            }
+                        }
+                    }
+                }
+            }
         });
     }
     
@@ -1176,6 +1333,27 @@ function renderTendances() {
     const ctxChauffeursM = document.getElementById('chartChauffeursM')?.getContext('2d');
     if (ctxChauffeursM) {
         chartChauffeursM = new Chart(ctxChauffeursM, { type: 'bar', data: { labels: topChauffeurs.map(c => c.nom.split(' ')[0]), datasets: [{ data: topChauffeurs.map(c => c.tot), backgroundColor: topChauffeurs.map((c, i) => i === 0 ? '#ffd700' : i === 1 ? '#c0c0c0' : i === 2 ? '#cd7f32' : chartColors.blue), borderRadius: 4 }] }, options: { ...baseOptions, indexAxis: 'y' } });
+    }
+    
+    // Chart Enseignes Mobile (Camembert)
+    const ctxEnseignesM = document.getElementById('chartEnseignesM')?.getContext('2d');
+    if (ctxEnseignesM) {
+        chartEnseignesM = new Chart(ctxEnseignesM, {
+            type: 'doughnut',
+            data: {
+                labels: ['ABC', 'BUT', 'Proma', 'HP'],
+                datasets: [{
+                    data: [enseignesCounts.ABC, enseignesCounts.BUT, enseignesCounts.Proma, enseignesCounts.HP],
+                    backgroundColor: ['rgba(59, 130, 246, 0.8)', 'rgba(249, 115, 22, 0.8)', 'rgba(16, 185, 129, 0.8)', 'rgba(139, 92, 246, 0.8)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
     }
 }
 

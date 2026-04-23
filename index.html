@@ -205,12 +205,12 @@
                 <p class="text-white/50 text-xs mb-2">Répartition dans la journée</p>
                 <div class="flex-1 relative"><canvas id="chartHeures"></canvas></div>
             </div>
-            <div class="bg-white/5 rounded-2xl border border-white/10 p-4 flex flex-col min-h-[220px]">
+            <div class="bg-white/5 rounded-2xl border border-white/10 p-3 flex flex-col min-h-[220px]">
                 <h3 class="text-sm font-bold mb-1">🏪 Répartition par Enseigne</h3>
-                <p class="text-white/50 text-xs mb-2">Pour facturation</p>
-                <div class="flex-1 flex items-center gap-4">
-                    <div class="flex-1 h-full flex items-center justify-center"><canvas id="chartEnseignes"></canvas></div>
-                    <div class="flex flex-col justify-center space-y-1.5 text-sm min-w-[110px]">
+                <p class="text-white/50 text-xs mb-1">Pour facturation</p>
+                <div class="flex-1 grid grid-cols-2 gap-2">
+                    <div class="flex items-center justify-center"><canvas id="chartEnseignes"></canvas></div>
+                    <div class="flex flex-col justify-center space-y-1 text-sm">
                         <div class="flex justify-between items-center p-1.5 bg-white/5 rounded">
                             <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span>ABC</span>
                             <span id="count-abc" class="font-bold">0</span>
